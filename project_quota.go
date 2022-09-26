@@ -32,12 +32,12 @@ func (o ProjectCommandOption) SubCommandString() string {
 	cmds := []string{}
 	cmds = append(cmds, "project")
 
-	if o.Depth == 0 {
+	if o.Depth != 0 {
 		cmds = append(cmds, "-d")
 		cmds = append(cmds, strconv.FormatUint(uint64(o.Depth), 10))
 	}
 
-	if o.Path == "" {
+	if o.Path != "" {
 		cmds = append(cmds, "-p")
 		cmds = append(cmds, o.Path)
 	}
