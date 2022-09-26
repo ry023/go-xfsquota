@@ -58,7 +58,7 @@ type GlobalOption struct {
 }
 
 type SubCommandOption interface {
-	String() string
+	SubCommandString() string
 }
 
 func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
@@ -120,7 +120,7 @@ func (c *XfsQuotaClient) ExecuteCommand(commandOpt SubCommandOption, globalOpt G
 	}
 
 	args = append(args, "-c")
-	args = append(args, fmt.Sprintf("'%s'", commandOpt.String()))
+	args = append(args, fmt.Sprintf("'%s'", commandOpt.SubCommandString()))
 
 	for _, d := range globalOpt.Projects {
 		args = append(args, "-d")

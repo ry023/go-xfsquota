@@ -15,7 +15,7 @@ type ProjectCommandOption struct {
 	Name  string
 }
 
-func (o ProjectCommandOption) String() string {
+func (o ProjectCommandOption) SubCommandString() string {
 	cmds := []string{}
 	cmds = append(cmds, "project")
 
