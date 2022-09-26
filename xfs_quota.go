@@ -1,11 +1,7 @@
 package xfsquota
 
 import (
-	"bytes"
 	"fmt"
-	"io"
-	"os"
-	"os/exec"
 	"regexp"
 
 	v "github.com/hashicorp/go-version"
@@ -13,8 +9,8 @@ import (
 
 // xfs_quota wrapper client
 type XfsQuotaClient struct {
-	// The path to xfs_quota binary
-	BinaryPath string
+	// xfs_quota binary
+	Binary BinaryExecuter
 	// xfs_quota will only run if it satisfies the constraints of this version.
 	VersionConstraint string
 	// Ignore version checking if true. (Default is false)
@@ -29,7 +25,9 @@ type NewXfsQuotaClientOption func(*XfsQuotaClient) error
 
 func NewXfsQuotaClient(binaryPath string, opts ...NewXfsQuotaClientOption) (*XfsQuotaClient, error) {
 	c := &XfsQuotaClient{
-		BinaryPath: binaryPath,
+		Binary: &XfsQuotaBinary{
+			Path: binaryPath,
+		},
 	}
 
 	for _, opt := range opts {
@@ -64,7 +62,7 @@ type SubCommandOption interface {
 }
 
 func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
-	stdout, _, err := c.executeBinary("-V")
+	stdout, _, err := c.Binary.Execute("-V")
 	if err != nil {
 		return "", err
 	}
@@ -79,17 +77,16 @@ func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
 }
 
 func (c *XfsQuotaClient) validateBinary() error {
+	if err := c.Binary.Validate(); err != nil {
+		return err
+	}
+
 	if c.IgnoreVersionConstraint {
 		return nil
 	}
 
 	constraints, err := v.NewConstraint(c.VersionConstraint)
 	if err != nil {
-		return err
-	}
-
-	// Check file existence
-	if _, err = os.Stat(c.BinaryPath); err != nil {
 		return err
 	}
 
@@ -134,30 +131,5 @@ func (c *XfsQuotaClient) ExecuteCommand(commandOpt SubCommandOption, globalOpt G
 		args = append(args, globalOpt.Path)
 	}
 
-	return c.executeBinary(args...)
-}
-
-func (c *XfsQuotaClient) executeBinary(args ...string) ([]byte, []byte, error) {
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-
-	cmd := exec.Command(c.BinaryPath, args...)
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-
-	if err := cmd.Run(); err != nil {
-		return nil, nil, err
-	}
-
-	stdoutBytes, err := io.ReadAll(&stdout)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	stderrBytes, err := io.ReadAll(&stderr)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return stdoutBytes, stderrBytes, nil
+	return c.Binary.Execute(args...)
 }
