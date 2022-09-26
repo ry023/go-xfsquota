@@ -57,7 +57,9 @@ type GlobalOption struct {
 	Path string
 }
 
+// Interface to generate subcommands to specify for the -c option
 type SubCommandOption interface {
+	// Generate subcommand text
 	SubCommandString() string
 }
 
