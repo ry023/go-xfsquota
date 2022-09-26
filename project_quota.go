@@ -6,15 +6,28 @@ import (
 )
 
 type ProjectCommandOption struct {
+	// Equeal to "-d" flag on commandline.
+	// This option allows to limit recursion level when processing project directories
 	Depth uint32
-	Path  string
+	// Equeal to "-p" flag on commandline.
+	// This option allows to specify project paths at command line ( instead of /etc/projects ).
+	Path string
+	// Equeal to "-s" flag on commandline.
 	Setup bool
+	// Equeal to "-C" flag on commandline.
 	Clear bool
+	// Equeal to "-c" flag on commandline.
 	Check bool
-	Id    uint32
-	Name  string
+	// Project ID to target
+	Id []uint32
+	// Project name to target
+	Name []string
 }
 
+// Build 'project' subcommand
+//
+// format:
+//   project [ -cCs [ -d depth ] [ -p path ] id | name ]
 func (o ProjectCommandOption) SubCommandString() string {
 	cmds := []string{}
 	cmds = append(cmds, "project")
@@ -39,6 +52,14 @@ func (o ProjectCommandOption) SubCommandString() string {
 
 	if o.Check {
 		cmds = append(cmds, "-c")
+	}
+
+	for _, id := range o.Id {
+		cmds = append(cmds, strconv.FormatUint(uint64(id), 10))
+	}
+
+	for _, name := range o.Name {
+		cmds = append(cmds, name)
 	}
 
 	return strings.Join(cmds, " ")
