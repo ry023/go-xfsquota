@@ -6,15 +6,9 @@ import (
 )
 
 type LimitCommandOption struct {
-	// Equal to `-g` flag on commandline.
-	// Set when specifying Id or Name as that of a Group.
-	Group bool
-	// Equal to `-u` flag on commandline.
-	// Set when specifying Id or Name as that of a User.
-	User bool
-	// Equal to `-p` flag on commandline.
-	// Set when specifying Id or Name as that of a Project.
-	Project bool
+	// Equal to `-gpu` flag on commandline.
+	// Group/Project/User
+	QuotaType QuotaType
 	// Equal to `bsoft=N` argument on commandline.
 	// Set quota block soft limits.
 	Bsoft uint32
@@ -43,17 +37,7 @@ func (o LimitCommandOption) SubCommandString() string {
 	cmds := []string{}
 	cmds = append(cmds, "limit")
 
-	if o.Group {
-		cmds = append(cmds, "-g")
-	}
-
-	if o.Project {
-		cmds = append(cmds, "-p")
-	}
-
-	if o.User {
-		cmds = append(cmds, "-u")
-	}
+	cmds = append(cmds, o.QuotaType.Flag())
 
 	if o.Bsoft != 0 {
 		cmds = append(cmds, fmt.Sprintf("bsoft=%d", o.Bsoft))
@@ -90,14 +74,14 @@ func (c *Command) Limit(subopt LimitCommandOption) error {
 
 func (c *Command) LimitProjectWithId(id, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
 	opt := LimitCommandOption{
-		Project: true,
-		Id:      []uint32{id},
-		Bsoft:   bsoft,
-		Bhard:   bhard,
-		Isoft:   isoft,
-		Ihard:   ihard,
-		Rtbsoft: rtbsoft,
-		Rtbhard: rtbhard,
+		QuotaType: QuotaTypeProject,
+		Id:        []uint32{id},
+		Bsoft:     bsoft,
+		Bhard:     bhard,
+		Isoft:     isoft,
+		Ihard:     ihard,
+		Rtbsoft:   rtbsoft,
+		Rtbhard:   rtbhard,
 	}
 
 	return c.Limit(opt)
@@ -105,14 +89,14 @@ func (c *Command) LimitProjectWithId(id, bsoft, bhard, isoft, ihard, rtbsoft, rt
 
 func (c *Command) LimitProjectWithName(name string, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
 	opt := LimitCommandOption{
-		Project: true,
-		Name:    []string{name},
-		Bsoft:   bsoft,
-		Bhard:   bhard,
-		Isoft:   isoft,
-		Ihard:   ihard,
-		Rtbsoft: rtbsoft,
-		Rtbhard: rtbhard,
+		QuotaType: QuotaTypeProject,
+		Name:      []string{name},
+		Bsoft:     bsoft,
+		Bhard:     bhard,
+		Isoft:     isoft,
+		Ihard:     ihard,
+		Rtbsoft:   rtbsoft,
+		Rtbhard:   rtbhard,
 	}
 
 	return c.Limit(opt)

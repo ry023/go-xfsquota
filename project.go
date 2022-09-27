@@ -12,17 +12,22 @@ type ProjectCommandOption struct {
 	// Equeal to "-p" flag on commandline.
 	// This option allows to specify project paths at command line ( instead of /etc/projects ).
 	Path string
-	// Equeal to "-s" flag on commandline.
-	Setup bool
-	// Equeal to "-C" flag on commandline.
-	Clear bool
-	// Equeal to "-c" flag on commandline.
-	Check bool
+	// Setup/Clear/Check operation
+	Operation ProjectOptsType
 	// Project ID to target
 	Id []uint32
 	// Project name to target
 	Name []string
 }
+
+// Equeal to "-sCc" flag on commandline.
+type ProjectOptsType string
+
+const (
+	ProjectSetupOpts = ProjectOptsType("Setup")
+	ProjectClearOpts = ProjectOptsType("Clear")
+	ProjectCheckOpts = ProjectOptsType("Check")
+)
 
 // Build 'project' subcommand
 //
@@ -42,15 +47,12 @@ func (o ProjectCommandOption) SubCommandString() string {
 		cmds = append(cmds, o.Path)
 	}
 
-	if o.Setup {
+	switch o.Operation {
+	case ProjectSetupOpts:
 		cmds = append(cmds, "-s")
-	}
-
-	if o.Clear {
+	case ProjectClearOpts:
 		cmds = append(cmds, "-C")
-	}
-
-	if o.Check {
+	case ProjectCheckOpts:
 		cmds = append(cmds, "-c")
 	}
 
@@ -73,10 +75,10 @@ func (c *Command) Project(opt ProjectCommandOption) error {
 
 func (c *Command) SetupProjectWithId(id uint32, path string, depth uint32) error {
 	opt := ProjectCommandOption{
-		Setup: true,
-		Path:  path,
-		Depth: depth,
-		Id:    []uint32{id},
+		Operation: ProjectSetupOpts,
+		Path:      path,
+		Depth:     depth,
+		Id:        []uint32{id},
 	}
 
 	return c.Project(opt)
@@ -84,10 +86,10 @@ func (c *Command) SetupProjectWithId(id uint32, path string, depth uint32) error
 
 func (c *Command) SetupProjectWithName(name string, path string, depth uint32) error {
 	opt := ProjectCommandOption{
-		Setup: true,
-		Path:  path,
-		Depth: depth,
-		Name:  []string{name},
+		Operation: ProjectSetupOpts,
+		Path:      path,
+		Depth:     depth,
+		Name:      []string{name},
 	}
 
 	return c.Project(opt)
@@ -95,10 +97,10 @@ func (c *Command) SetupProjectWithName(name string, path string, depth uint32) e
 
 func (c *Command) ClearProjectWithId(id uint32, path string, depth uint32) error {
 	opt := ProjectCommandOption{
-    Clear: true,
-		Path:  path,
-		Depth: depth,
-		Id:    []uint32{id},
+		Operation: ProjectClearOpts,
+		Path:      path,
+		Depth:     depth,
+		Id:        []uint32{id},
 	}
 
 	return c.Project(opt)
@@ -106,10 +108,10 @@ func (c *Command) ClearProjectWithId(id uint32, path string, depth uint32) error
 
 func (c *Command) ClearProjectWithName(name string, path string, depth uint32) error {
 	opt := ProjectCommandOption{
-    Clear: true,
-		Path:  path,
-		Depth: depth,
-		Name:    []string{name},
+		Operation: ProjectClearOpts,
+		Path:      path,
+		Depth:     depth,
+		Name:      []string{name},
 	}
 
 	return c.Project(opt)
