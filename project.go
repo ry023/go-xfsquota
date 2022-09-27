@@ -71,7 +71,7 @@ func (c *Command) Project(globalOpt GlobalOption, subopt ProjectCommandOption) e
 	return c.Execute()
 }
 
-func (c *Command) SetupProjectWithId(id uint32,path string, depth uint32, ) error {
+func (c *Command) SetupProjectWithId(id uint32, path string, depth uint32) error {
 	opt := ProjectCommandOption{
 		Setup: true,
 		Path:  path,
@@ -92,6 +92,36 @@ func (c *Command) SetupProjectWithName(name string, path string, depth uint32) e
 		Path:  path,
 		Depth: depth,
 		Name:  []string{name},
+	}
+
+	gopt := GlobalOption{
+		EnableExpertMode: true,
+	}
+
+	return c.Project(gopt, opt)
+}
+
+func (c *Command) ClearProjectWithId(id uint32, path string, depth uint32) error {
+	opt := ProjectCommandOption{
+    Clear: true,
+		Path:  path,
+		Depth: depth,
+		Id:    []uint32{id},
+	}
+
+	gopt := GlobalOption{
+		EnableExpertMode: true,
+	}
+
+	return c.Project(gopt, opt)
+}
+
+func (c *Command) ClearProjectWithName(name string, path string, depth uint32) error {
+	opt := ProjectCommandOption{
+    Clear: true,
+		Path:  path,
+		Depth: depth,
+		Name:    []string{name},
 	}
 
 	gopt := GlobalOption{

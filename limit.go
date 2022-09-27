@@ -6,10 +6,13 @@ import (
 )
 
 type LimitCommandOption struct {
+	// Equal to `-g` flag on commandline.
 	// Set when specifying Id or Name as that of a Group.
 	Group bool
+	// Equal to `-u` flag on commandline.
 	// Set when specifying Id or Name as that of a User.
 	User bool
+	// Equal to `-p` flag on commandline.
 	// Set when specifying Id or Name as that of a Project.
 	Project bool
 	// Equal to `bsoft=N` argument on commandline.
