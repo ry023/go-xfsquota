@@ -1,7 +1,9 @@
 package xfsquota
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"regexp"
 
 	v "github.com/hashicorp/go-version"
@@ -64,12 +66,17 @@ type SubCommandOption interface {
 }
 
 func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
-	stdout, _, err := c.Binary.Execute("-V")
+	var stdout bytes.Buffer
+	if err := c.Binary.Execute(&stdout, nil, "-V"); err != nil {
+		return "", err
+	}
+
+	stdoutBytes, err := io.ReadAll(&stdout)
 	if err != nil {
 		return "", err
 	}
 
-	submatches := c.VersionCommandRegexp.FindSubmatch(stdout)
+	submatches := c.VersionCommandRegexp.FindSubmatch(stdoutBytes)
 	if len(submatches) == 2 {
 		return "", fmt.Errorf("Failed to parse version command stdout by c.VersionCommandRegexp(%s). (submatches=%v)", c.VersionCommandRegexp.String(), submatches)
 	}
@@ -109,29 +116,6 @@ func (c *XfsQuotaClient) validateBinary() error {
 	return nil
 }
 
-func (c *XfsQuotaClient) ExecuteCommand(commandOpt SubCommandOption, globalOpt GlobalOption) ([]byte, []byte, error) {
-	var args []string
-
-	if globalOpt.EnableExpertMode {
-		args = append(args, "-x")
-	}
-
-	if globalOpt.ProgramName != "" {
-		args = append(args, "-p")
-		args = append(args, globalOpt.ProgramName)
-	}
-
-	args = append(args, "-c")
-	args = append(args, fmt.Sprintf("'%s'", commandOpt.SubCommandString()))
-
-	for _, d := range globalOpt.Projects {
-		args = append(args, "-d")
-		args = append(args, d)
-	}
-
-	if globalOpt.Path != "" {
-		args = append(args, globalOpt.Path)
-	}
-
-	return c.Binary.Execute(args...)
+func (c *XfsQuotaClient) Command() *Command {
+	return NewCommand(c.Binary)
 }

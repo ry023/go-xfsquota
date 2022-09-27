@@ -65,11 +65,13 @@ func (o ProjectCommandOption) SubCommandString() string {
 	return strings.Join(cmds, " ")
 }
 
-func (c *XfsQuotaClient) ExecuteProjectCommand(opt ProjectCommandOption, globalOpt GlobalOption) ([]byte, []byte, error) {
-	return c.ExecuteCommand(opt, globalOpt)
+func (c *Command) Project(globalOpt GlobalOption, subopt ProjectCommandOption) error {
+	c.SubOpt = subopt
+	c.GlobalOpt = globalOpt
+	return c.Execute()
 }
 
-func (c *XfsQuotaClient) SetupProjectWithId(path string, depth uint32, id uint32) error {
+func (c *Command) SetupProjectWithId(id uint32,path string, depth uint32, ) error {
 	opt := ProjectCommandOption{
 		Setup: true,
 		Path:  path,
@@ -81,11 +83,10 @@ func (c *XfsQuotaClient) SetupProjectWithId(path string, depth uint32, id uint32
 		EnableExpertMode: true,
 	}
 
-	_, _, err := c.ExecuteProjectCommand(opt, gopt)
-	return err
+	return c.Project(gopt, opt)
 }
 
-func (c *XfsQuotaClient) SetupProjectWithName(path string, depth uint32, name string) (error) {
+func (c *Command) SetupProjectWithName(name string, path string, depth uint32) error {
 	opt := ProjectCommandOption{
 		Setup: true,
 		Path:  path,
@@ -97,6 +98,5 @@ func (c *XfsQuotaClient) SetupProjectWithName(path string, depth uint32, name st
 		EnableExpertMode: true,
 	}
 
-	_, _, err := c.ExecuteProjectCommand(opt, gopt)
-	return err
+	return c.Project(gopt, opt)
 }

@@ -1,14 +1,13 @@
 package xfsquota
 
 import (
-	"bytes"
 	"io"
 	"os"
 	"os/exec"
 )
 
 type BinaryExecuter interface {
-	Execute(args ...string) ([]byte, []byte, error)
+	Execute(stdout io.Writer, stderr io.Writer, args ...string) error
 	Validate() error
 }
 
@@ -17,29 +16,12 @@ type XfsQuotaBinary struct {
 	Path string
 }
 
-func (b *XfsQuotaBinary) Execute(args ...string) ([]byte, []byte, error) {
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-
+func (b *XfsQuotaBinary) Execute(stdout io.Writer, stderr io.Writer, args ...string) error {
 	cmd := exec.Command(b.Path, args...)
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
+	cmd.Stdout = stdout
+	cmd.Stderr = stderr
 
-	if err := cmd.Run(); err != nil {
-		return nil, nil, err
-	}
-
-	stdoutBytes, err := io.ReadAll(&stdout)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	stderrBytes, err := io.ReadAll(&stderr)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return stdoutBytes, stderrBytes, nil
+	return cmd.Run()
 }
 
 func (b *XfsQuotaBinary) Validate() error {

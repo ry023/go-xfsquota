@@ -78,7 +78,3 @@ func (o LimitCommandOption) SubCommandString() string {
 
 	return strings.Join(cmds, " ")
 }
-
-func (c *XfsQuotaClient) ExecuteLimitCommand(opt LimitCommandOption, globalOpt GlobalOption) ([]byte, []byte, error) {
-	return c.ExecuteCommand(opt, globalOpt)
-}
