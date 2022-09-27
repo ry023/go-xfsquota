@@ -23,9 +23,9 @@ type XfsQuotaClient struct {
 
 var DefaultVersionCommandRegexp = regexp.MustCompile(`xfs_quota version\s(.*)\r?\n?$`)
 
-type NewXfsQuotaClientOption func(*XfsQuotaClient) error
+type NewClientOption func(*XfsQuotaClient) error
 
-func NewXfsQuotaClient(binaryPath string, opts ...NewXfsQuotaClientOption) (*XfsQuotaClient, error) {
+func NewClient(binaryPath string, opts ...NewClientOption) (*XfsQuotaClient, error) {
 	c := &XfsQuotaClient{
 		Binary: &XfsQuotaBinary{
 			Path: binaryPath,
