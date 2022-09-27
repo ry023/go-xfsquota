@@ -81,3 +81,28 @@ func (o LimitCommandOption) SubCommandString() string {
 
 	return strings.Join(cmds, " ")
 }
+
+func (c *Command) Limit(globalOpt GlobalOption, subopt LimitCommandOption) error {
+	c.SubOpt = subopt
+	c.GlobalOpt = globalOpt
+	return c.Execute()
+}
+
+func (c *Command) LimitProject(bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
+	opt := LimitCommandOption{
+    Project: true,
+
+		Bsoft:   bsoft,
+		Bhard:   bhard,
+		Isoft:   isoft,
+		Ihard:   ihard,
+		Rtbsoft: rtbsoft,
+		Rtbhard: rtbhard,
+	}
+
+	gopt := GlobalOption{
+		EnableExpertMode: true,
+	}
+
+	return c.Limit(gopt, opt)
+}
