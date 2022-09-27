@@ -88,10 +88,29 @@ func (c *Command) Limit(globalOpt GlobalOption, subopt LimitCommandOption) error
 	return c.Execute()
 }
 
-func (c *Command) LimitProject(bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
+func (c *Command) LimitProjectWithId(id, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
 	opt := LimitCommandOption{
-    Project: true,
+		Project: true,
+		Id:      []uint32{id},
+		Bsoft:   bsoft,
+		Bhard:   bhard,
+		Isoft:   isoft,
+		Ihard:   ihard,
+		Rtbsoft: rtbsoft,
+		Rtbhard: rtbhard,
+	}
 
+	gopt := GlobalOption{
+		EnableExpertMode: true,
+	}
+
+	return c.Limit(gopt, opt)
+}
+
+func (c *Command) LimitProjectWithName(name string, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
+	opt := LimitCommandOption{
+		Project: true,
+		Name:    []string{name},
 		Bsoft:   bsoft,
 		Bhard:   bhard,
 		Isoft:   isoft,
