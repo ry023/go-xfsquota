@@ -45,26 +45,6 @@ func NewXfsQuotaClient(binaryPath string, opts ...NewXfsQuotaClientOption) (*Xfs
 	return c, nil
 }
 
-type GlobalOption struct {
-	// Equeal to "-p" flag on commandline.
-	// Set the program name for prompts and some error messages, the default value is xfs_quota.
-	ProgramName string
-	// Equeal to "-x" flag on commandline.
-	// Enable expert mode. All of the administrative commands which allow modifications to the quota system are available only in expert mode.
-	EnableExpertMode bool
-	// Equeal to "-d" flag on commandline.
-	// Project names or numeric identifiers may be specified with this option, which restricts the output of the individual xfs_quota commands to the set of projects specified.
-	Projects []string
-	// The optional path argument can be used to specify mount points or device files which identify XFS filesystems. The output of the individual xfs_quota commands will then be restricted to the set of filesystems specified.
-	Path string
-}
-
-// Interface to generate subcommands to specify for the -c option
-type SubCommandOption interface {
-	// Generate subcommand text
-	SubCommandString() string
-}
-
 func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
 	var stdout bytes.Buffer
 	if err := c.Binary.Execute(&stdout, nil, "-V"); err != nil {
@@ -116,6 +96,6 @@ func (c *XfsQuotaClient) validateBinary() error {
 	return nil
 }
 
-func (c *XfsQuotaClient) Command() *Command {
-	return NewCommand(c.Binary)
+func (c *XfsQuotaClient) Command(opt *GlobalOption) *Command {
+  return NewCommand(c.Binary, opt)
 }
