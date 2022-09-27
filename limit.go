@@ -82,9 +82,9 @@ func (o LimitCommandOption) SubCommandString() string {
 	return strings.Join(cmds, " ")
 }
 
-func (c *Command) Limit(globalOpt GlobalOption, subopt LimitCommandOption) error {
+func (c *Command) Limit(subopt LimitCommandOption) error {
+	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.SubOpt = subopt
-	c.GlobalOpt = globalOpt
 	return c.Execute()
 }
 
@@ -100,11 +100,7 @@ func (c *Command) LimitProjectWithId(id, bsoft, bhard, isoft, ihard, rtbsoft, rt
 		Rtbhard: rtbhard,
 	}
 
-	gopt := GlobalOption{
-		EnableExpertMode: true,
-	}
-
-	return c.Limit(gopt, opt)
+	return c.Limit(opt)
 }
 
 func (c *Command) LimitProjectWithName(name string, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
@@ -119,9 +115,5 @@ func (c *Command) LimitProjectWithName(name string, bsoft, bhard, isoft, ihard, 
 		Rtbhard: rtbhard,
 	}
 
-	gopt := GlobalOption{
-		EnableExpertMode: true,
-	}
-
-	return c.Limit(gopt, opt)
+	return c.Limit(opt)
 }
