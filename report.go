@@ -35,6 +35,9 @@ func (o reportCommandArgs) subCommandString() string {
 	cmds = append(cmds, o.quotaType.Flag())
 	cmds = append(cmds, o.quotaTargetType.Flag())
 
+	// Force to numetric mode for parsing
+	cmds = append(cmds, "-N")
+
 	if o.opt.LowerId != 0 {
 		cmds = append(cmds, "-L")
 		cmds = append(cmds, strconv.FormatUint(uint64(o.opt.LowerId), 10))
