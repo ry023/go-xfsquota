@@ -10,19 +10,47 @@ import (
 type ReportCommandOption struct {
 	// Equal to `-gpu` flag on commandline.
 	// Group/Project/User
-	QuotaTypes QuotaType
+	QuotaType QuotaType
 	// Equal to `-bir` flag on commandline.
 	// Blocks/Inodes/Realtime
 	QuotaTargetType QuotaTargetType
-	// Equal to `-n` flag on commandline.
-	// outputs the numeric ID instead of the name
-	Numeric bool
 	// Equal to `-L` flag on commandline.
 	// lower ID bounds to report on
 	LowerId uint32
 	// Equal to `-U` flag on commandline.
 	// upper ID bounds to report on
 	UpperId uint32
+}
+
+func (o ReportCommandOption) SubCommandString() string {
+	cmds := []string{}
+	cmds = append(cmds, "report")
+
+	if o.QuotaType != "" {
+		cmds = append(cmds, o.QuotaType.Flag())
+	}
+
+	if o.LowerId != 0 {
+		cmds = append(cmds, "-L")
+		cmds = append(cmds, strconv.FormatUint(uint64(o.LowerId), 10))
+	}
+
+	if o.UpperId != 0 {
+		cmds = append(cmds, "-L")
+		cmds = append(cmds, strconv.FormatUint(uint64(o.UpperId), 10))
+	}
+
+	if o.QuotaTargetType != "" {
+		cmds = append(cmds, o.QuotaTargetType.Flag())
+	}
+
+	return strings.Join(cmds, " ")
+}
+
+func (c *Command) Report(opt ReportCommandOption) error {
+	c.GlobalOpt.EnableExpertMode = true // require expert mode
+	c.SubOpt = opt
+	return c.Execute()
 }
 
 type ReportResult struct {
