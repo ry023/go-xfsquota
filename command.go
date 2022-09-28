@@ -13,6 +13,10 @@ type Command struct {
 	Stderr    io.Writer
 	Binary    BinaryExecuter
 
+	// The path argument can be used to specify mount points or device files which identify XFS filesystems. The output of the individual xfs_quota commands will then be restricted to the set of filesystems specified.
+	// NOTE: This argument is optional on original xfs_quota but required on current go-xfsquota-wrapper version.
+	FileSystemPath string
+
 	systemStdoutBuf *bytes.Buffer
 	systemStderrBuf *bytes.Buffer
 }
@@ -27,8 +31,6 @@ type GlobalOption struct {
 	// Equeal to "-d" flag on commandline.
 	// Project names or numeric identifiers may be specified with this option, which restricts the output of the individual xfs_quota commands to the set of projects specified.
 	Projects []string
-	// The optional path argument can be used to specify mount points or device files which identify XFS filesystems. The output of the individual xfs_quota commands will then be restricted to the set of filesystems specified.
-	Path string
 }
 
 // Interface to generate subcommands to specify for the -c option
@@ -37,9 +39,10 @@ type SubCommandOption interface {
 	SubCommandString() string
 }
 
-func NewCommand(binary BinaryExecuter, globalOpt *GlobalOption) *Command {
+func NewCommand(binary BinaryExecuter, filesystemPath string, globalOpt *GlobalOption) *Command {
 	cmd := &Command{
-		Binary: binary,
+		Binary:         binary,
+		FileSystemPath: filesystemPath,
 	}
 
 	if globalOpt != nil {
@@ -90,8 +93,6 @@ func (c *Command) buildArgs() []string {
 		args = append(args, d)
 	}
 
-	if c.GlobalOpt.Path != "" {
-		args = append(args, c.GlobalOpt.Path)
-	}
+	args = append(args, c.FileSystemPath)
 	return args
 }
