@@ -43,6 +43,9 @@ func NewCommand(binary BinaryExecuter, filesystemPath string, globalOpt *GlobalO
 	cmd := &Command{
 		Binary:         binary,
 		FileSystemPath: filesystemPath,
+
+		systemStdoutBuf: new(bytes.Buffer),
+		systemStderrBuf: new(bytes.Buffer),
 	}
 
 	if globalOpt != nil {
