@@ -17,3 +17,24 @@ type ReportCommandOption struct {
 	// upper ID bounds to report on
 	UpperId uint32
 }
+
+type ReportResult struct {
+}
+
+type ReportSet struct {
+	QuotaType       QuotaType
+	QuotaTargetType QuotaTargetType
+	MountPath       string
+	DevicePath      string
+	ReportValues    []ReportValue
+}
+
+type ReportValue struct {
+	Id    uint32
+	Used  uint32
+	Soft  uint32
+	Hard  uint32
+	Grace uint32
+}
+
+func parseReportOutput(stdout []byte)
