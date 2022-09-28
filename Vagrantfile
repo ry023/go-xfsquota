@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
+  config.vm.synced_folder "./shared", "/home/vagrant/shared", owner: "vagrant", group: "vagrant"
 
   config.vm.provider "virtualbox" do |vb|
     disk_file = "./tmp/disk.vdi"
