@@ -7,7 +7,7 @@ import (
 )
 
 const binaryPath = "/usr/bin/xfs_quota"
-const mountPath = "/xfs_mount_root"
+const fsPath = "/xfs_root"
 
 func main() {
 	cli, err := xq.NewClient(binaryPath)
@@ -15,11 +15,7 @@ func main() {
 		log.Fatalf("caused error on creating client: %v", err)
 	}
 
-	gopt := xq.GlobalOption{
-		Path: mountPath,
-	}
-
-	err = cli.Command(&gopt).SetupProjectWithId(100, "/path/to/dirtree_root", 0)
+  err = cli.Command(fsPath, nil).SetupProjectWithId(100, "/xfs_root/dirtree", 0)
 	if err != nil {
 		log.Fatalf("caused error on execution: %v", err)
 	}
