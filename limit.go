@@ -2,6 +2,7 @@ package xfsquota
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -68,6 +69,14 @@ func (o limitCommandArgs) subCommandString() string {
 		cmds = append(cmds, fmt.Sprintf("rtbhard=%d", o.opt.Rtbhard))
 	}
 
+	for _, id := range o.id {
+		cmds = append(cmds, strconv.FormatUint(uint64(id), 10))
+	}
+
+	for _, name := range o.name {
+		cmds = append(cmds, name)
+	}
+
 	return strings.Join(cmds, " ")
 }
 
@@ -84,7 +93,7 @@ func (c *Command) LimitWithId(id uint32, quotaType QuotaType, quotaTargetType Qu
 func (c *Command) LimitWithName(name string, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.subCmdArgs = limitCommandArgs{
-		name:        []string{name},
+		name:      []string{name},
 		quotaType: quotaType,
 		opt:       opt,
 	}
