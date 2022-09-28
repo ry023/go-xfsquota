@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-  "fmt"
 
+	pp "github.com/k0kubun/pp/v3"
 	xq "github.com/ry023/go-xfsquota-wrapper"
 )
 
@@ -34,11 +34,39 @@ func main() {
 		log.Fatalf("caused error on execution: %v", err)
 	}
 
-  // Report ProjectQuota
-  rep, err := cli.Command(fsPath, nil).Report(xq.QuotaTypeProject, xq.QuotaTargetTypeBlocks, xq.ReportCommandOption{})
+	// Report ProjectQuota
+	rep, err := cli.Command(fsPath, nil).Report(xq.QuotaTypeProject, xq.QuotaTargetTypeBlocks, xq.ReportCommandOption{})
 	if err != nil {
 		log.Fatalf("caused error on execution: %v", err)
 	}
 
-  fmt.Printf("%+v\n", rep.ReportSets)
+	pp.Println(rep) // This is expected to output the following;
+	// ```
+	// &xfsquota.ReportResult{
+	//   ReportSets: []xfsquota.ReportSet{
+	//     xfsquota.ReportSet{
+	//       QuotaType:       "Project",
+	//       QuotaTargetType: "Blocks",
+	//       MountPath:       "/xfs_root",
+	//       DevicePath:      "",
+	//       ReportValues:    []xfsquota.ReportValue{
+	//         xfsquota.ReportValue{
+	//           Id:    0,
+	//           Used:  0,
+	//           Soft:  0,
+	//           Hard:  0,
+	//           Grace: 0,
+	//         },
+	//         xfsquota.ReportValue{
+	//           Id:    100,
+	//           Used:  0,
+	//           Soft:  16,
+	//           Hard:  16,
+	//           Grace: 0,
+	//         },
+	//       },
+	//     },
+	//   },
+	// }
+	// ```
 }
