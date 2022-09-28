@@ -6,7 +6,7 @@ import (
 	xq "github.com/ry023/go-xfsquota-wrapper"
 )
 
-const binaryPath = "/usr/bin/xfs_quota"
+const binaryPath = "/usr/sbin/xfs_quota"
 const fsPath = "/xfs_root"
 
 func main() {
