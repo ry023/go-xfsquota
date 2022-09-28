@@ -6,9 +6,6 @@ import (
 )
 
 type LimitCommandOption struct {
-	// Equal to `-gpu` flag on commandline.
-	// Group/Project/User
-	QuotaType QuotaType
 	// Equal to `bsoft=N` argument on commandline.
 	// Set quota block soft limits.
 	Bsoft uint32
@@ -27,77 +24,69 @@ type LimitCommandOption struct {
 	// Equal to `rtbhard=N` argument on commandline.
 	// Set quota realtime block hard limits.
 	Rtbhard uint32
-	// ID to target
-	Id []uint32
-	// Name to target
-	Name []string
 }
 
-func (o LimitCommandOption) SubCommandString() string {
+type limitCommandArgs struct {
+	// ID to target
+	id []uint32
+	// Name to target
+	name []string
+	// Equal to `-gpu` flag on commandline.
+	// Group/Project/User
+	quotaType QuotaType
+
+	opt LimitCommandOption
+}
+
+func (o limitCommandArgs) subCommandString() string {
 	cmds := []string{}
 	cmds = append(cmds, "limit")
 
-	cmds = append(cmds, o.QuotaType.Flag())
+	cmds = append(cmds, o.quotaType.Flag())
 
-	if o.Bsoft != 0 {
-		cmds = append(cmds, fmt.Sprintf("bsoft=%d", o.Bsoft))
+	if o.opt.Bsoft != 0 {
+		cmds = append(cmds, fmt.Sprintf("bsoft=%d", o.opt.Bsoft))
 	}
 
-	if o.Bhard != 0 {
-		cmds = append(cmds, fmt.Sprintf("bhard=%d", o.Bhard))
+	if o.opt.Bhard != 0 {
+		cmds = append(cmds, fmt.Sprintf("bhard=%d", o.opt.Bhard))
 	}
 
-	if o.Isoft != 0 {
-		cmds = append(cmds, fmt.Sprintf("isoft=%d", o.Isoft))
+	if o.opt.Isoft != 0 {
+		cmds = append(cmds, fmt.Sprintf("isoft=%d", o.opt.Isoft))
 	}
 
-	if o.Ihard != 0 {
-		cmds = append(cmds, fmt.Sprintf("ihard=%d", o.Ihard))
+	if o.opt.Ihard != 0 {
+		cmds = append(cmds, fmt.Sprintf("ihard=%d", o.opt.Ihard))
 	}
 
-	if o.Rtbsoft != 0 {
-		cmds = append(cmds, fmt.Sprintf("rtbsoft=%d", o.Rtbsoft))
+	if o.opt.Rtbsoft != 0 {
+		cmds = append(cmds, fmt.Sprintf("rtbsoft=%d", o.opt.Rtbsoft))
 	}
 
-	if o.Rtbhard != 0 {
-		cmds = append(cmds, fmt.Sprintf("rtbhard=%d", o.Rtbhard))
+	if o.opt.Rtbhard != 0 {
+		cmds = append(cmds, fmt.Sprintf("rtbhard=%d", o.opt.Rtbhard))
 	}
 
 	return strings.Join(cmds, " ")
 }
 
-func (c *Command) Limit(subopt LimitCommandOption) error {
+func (c *Command) LimitWithId(id uint32, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
-	c.SubOpt = subopt
+	c.subCmdArgs = limitCommandArgs{
+		id:        []uint32{id},
+		quotaType: quotaType,
+		opt:       opt,
+	}
 	return c.Execute()
 }
 
-func (c *Command) LimitProjectWithId(id, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
-	opt := LimitCommandOption{
-		QuotaType: QuotaTypeProject,
-		Id:        []uint32{id},
-		Bsoft:     bsoft,
-		Bhard:     bhard,
-		Isoft:     isoft,
-		Ihard:     ihard,
-		Rtbsoft:   rtbsoft,
-		Rtbhard:   rtbhard,
+func (c *Command) LimitWithName(name string, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
+	c.GlobalOpt.EnableExpertMode = true // require expert mode
+	c.subCmdArgs = limitCommandArgs{
+		name:        []string{name},
+		quotaType: quotaType,
+		opt:       opt,
 	}
-
-	return c.Limit(opt)
-}
-
-func (c *Command) LimitProjectWithName(name string, bsoft, bhard, isoft, ihard, rtbsoft, rtbhard uint32) error {
-	opt := LimitCommandOption{
-		QuotaType: QuotaTypeProject,
-		Name:      []string{name},
-		Bsoft:     bsoft,
-		Bhard:     bhard,
-		Isoft:     isoft,
-		Ihard:     ihard,
-		Rtbsoft:   rtbsoft,
-		Rtbhard:   rtbhard,
-	}
-
-	return c.Limit(opt)
+	return c.Execute()
 }

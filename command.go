@@ -7,11 +7,11 @@ import (
 )
 
 type Command struct {
-	SubOpt    SubCommandOption
-	GlobalOpt GlobalOption
-	Stdout    io.Writer
-	Stderr    io.Writer
-	Binary    BinaryExecuter
+	subCmdArgs subCommandArgs
+	GlobalOpt  GlobalOption
+	Stdout     io.Writer
+	Stderr     io.Writer
+	Binary     BinaryExecuter
 
 	// The path argument can be used to specify mount points or device files which identify XFS filesystems. The output of the individual xfs_quota commands will then be restricted to the set of filesystems specified.
 	// NOTE: This argument is optional on original xfs_quota but required on current go-xfsquota-wrapper version.
@@ -34,9 +34,9 @@ type GlobalOption struct {
 }
 
 // Interface to generate subcommands to specify for the -c option
-type SubCommandOption interface {
+type subCommandArgs interface {
 	// Generate subcommand text
-	SubCommandString() string
+	subCommandString() string
 }
 
 func NewCommand(binary BinaryExecuter, filesystemPath string, globalOpt *GlobalOption) *Command {
@@ -86,7 +86,7 @@ func (c *Command) buildArgs() []string {
 	}
 
 	args = append(args, "-c")
-	args = append(args, fmt.Sprintf("'%s'", c.SubOpt.SubCommandString()))
+	args = append(args, fmt.Sprintf("'%s'", c.subCmdArgs.subCommandString()))
 
 	for _, d := range c.GlobalOpt.Projects {
 		args = append(args, "-d")

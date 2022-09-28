@@ -15,7 +15,7 @@ func main() {
 		log.Fatalf("caused error on creating client: %v", err)
 	}
 
-  err = cli.Command(fsPath, nil).SetupProjectWithId(100, "/xfs_root/dirtree", 0)
+  err = cli.Command(fsPath, nil).SetupProjectWithId(100, xq.ProjectCommandOption{Path: "/xfs_root/dir"})
 	if err != nil {
 		log.Fatalf("caused error on execution: %v", err)
 	}

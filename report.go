@@ -2,18 +2,24 @@ package xfsquota
 
 import (
 	"fmt"
+	"io"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
-type ReportCommandOption struct {
+type reportCommandArgs struct {
 	// Equal to `-gpu` flag on commandline.
 	// Group/Project/User
-	QuotaType QuotaType
+	quotaType QuotaType
 	// Equal to `-bir` flag on commandline.
 	// Blocks/Inodes/Realtime
-	QuotaTargetType QuotaTargetType
+	quotaTargetType QuotaTargetType
+
+	opt ReportCommandOption
+}
+
+type ReportCommandOption struct {
 	// Equal to `-L` flag on commandline.
 	// lower ID bounds to report on
 	LowerId uint32
@@ -22,35 +28,44 @@ type ReportCommandOption struct {
 	UpperId uint32
 }
 
-func (o ReportCommandOption) SubCommandString() string {
+func (o reportCommandArgs) subCommandString() string {
 	cmds := []string{}
 	cmds = append(cmds, "report")
 
-	if o.QuotaType != "" {
-		cmds = append(cmds, o.QuotaType.Flag())
-	}
+	cmds = append(cmds, o.quotaType.Flag())
+	cmds = append(cmds, o.quotaTargetType.Flag())
 
-	if o.LowerId != 0 {
+	if o.opt.LowerId != 0 {
 		cmds = append(cmds, "-L")
-		cmds = append(cmds, strconv.FormatUint(uint64(o.LowerId), 10))
+		cmds = append(cmds, strconv.FormatUint(uint64(o.opt.LowerId), 10))
 	}
 
-	if o.UpperId != 0 {
+	if o.opt.UpperId != 0 {
 		cmds = append(cmds, "-L")
-		cmds = append(cmds, strconv.FormatUint(uint64(o.UpperId), 10))
-	}
-
-	if o.QuotaTargetType != "" {
-		cmds = append(cmds, o.QuotaTargetType.Flag())
+		cmds = append(cmds, strconv.FormatUint(uint64(o.opt.UpperId), 10))
 	}
 
 	return strings.Join(cmds, " ")
 }
 
-func (c *Command) Report(opt ReportCommandOption) error {
+func (c *Command) Report(quotaType QuotaType, quotaTargetType QuotaTargetType, opt ReportCommandOption) (*ReportResult, error) {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
-	c.SubOpt = opt
-	return c.Execute()
+	c.subCmdArgs = reportCommandArgs{
+		quotaType:       quotaType,
+		quotaTargetType: quotaTargetType,
+		opt:             opt,
+	}
+	err := c.Execute()
+	if err != nil {
+		return nil, err
+	}
+
+	out, err := io.ReadAll(c.systemStdoutBuf)
+	if err != nil {
+		return nil, err
+	}
+
+	return parseHeadlessReportOutput(out, quotaType, quotaTargetType, c.FileSystemPath, "")
 }
 
 type ReportResult struct {
