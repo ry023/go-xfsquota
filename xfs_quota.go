@@ -21,6 +21,8 @@ type XfsQuotaClient struct {
 	VersionCommandRegexp *regexp.Regexp
 }
 
+const DefaultVersionConstraint = ">= 5.13.0"
+
 var DefaultVersionCommandRegexp = regexp.MustCompile(`xfs_quota version\s(.*)\r?\n?$`)
 
 type NewClientOption func(*XfsQuotaClient) error
@@ -30,6 +32,8 @@ func NewClient(binaryPath string, opts ...NewClientOption) (*XfsQuotaClient, err
 		Binary: &XfsQuotaBinary{
 			Path: binaryPath,
 		},
+		VersionConstraint: DefaultVersionConstraint,
+    VersionCommandRegexp: DefaultVersionCommandRegexp,
 	}
 
 	for _, opt := range opts {
@@ -57,7 +61,7 @@ func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
 	}
 
 	submatches := c.VersionCommandRegexp.FindSubmatch(stdoutBytes)
-	if len(submatches) == 2 {
+	if len(submatches) != 2 {
 		return "", fmt.Errorf("Failed to parse version command stdout by c.VersionCommandRegexp(%s). (submatches=%v)", c.VersionCommandRegexp.String(), submatches)
 	}
 
