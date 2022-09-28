@@ -1,0 +1,5 @@
+github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
+github.com/hashicorp/go-version v1.6.0 h1:feTTfFNnjP967rlCxM/I9g701jU+RN74YKx2mOkIeek=
+github.com/hashicorp/go-version v1.6.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
+github.com/ry023/go-xfsquota-wrapper v0.0.0-20220928093332-17402aad706b h1:Xh3BE1FE7+AT8B05TJE3DN6QMLdH/8bCkNgo9A+9s34=
+github.com/ry023/go-xfsquota-wrapper v0.0.0-20220928093332-17402aad706b/go.mod h1:benpDHV4qSuBqpUaMmfxItRN+UmltNgPdaZoZDEAKNw=

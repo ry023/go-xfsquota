@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+  "fmt"
 
 	xq "github.com/ry023/go-xfsquota-wrapper"
 )
@@ -32,4 +33,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("caused error on execution: %v", err)
 	}
+
+  // Report ProjectQuota
+  rep, err := cli.Command(fsPath, nil).Report(xq.QuotaTypeProject, xq.QuotaTargetTypeBlocks, xq.ReportCommandOption{})
+	if err != nil {
+		log.Fatalf("caused error on execution: %v", err)
+	}
+
+  fmt.Printf("%+v\n", rep.ReportSets)
 }
