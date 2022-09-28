@@ -2,7 +2,6 @@ package xfsquota
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 )
 
@@ -89,7 +88,7 @@ func (c *Command) buildArgs() []string {
 	}
 
 	args = append(args, "-c")
-	args = append(args, fmt.Sprintf("'%s'", c.subCmdArgs.subCommandString()))
+	args = append(args, c.subCmdArgs.subCommandString())
 
 	for _, d := range c.GlobalOpt.Projects {
 		args = append(args, "-d")
