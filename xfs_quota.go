@@ -29,21 +29,13 @@ const DefaultVersionConstraint = ">= 5.13.0"
 
 var DefaultVersionCommandRegexp = regexp.MustCompile(`xfs_quota version\s(.*)\r?\n?$`)
 
-type NewClientOption func(*XfsQuotaClient) error
-
-func NewClient(binaryPath string, opts ...NewClientOption) (*XfsQuotaClient, error) {
+func NewClient(binaryPath string) (*XfsQuotaClient, error) {
 	c := &XfsQuotaClient{
 		Binary: &XfsQuotaBinary{
 			Path: binaryPath,
 		},
 		VersionConstraint:    DefaultVersionConstraint,
 		VersionCommandRegexp: DefaultVersionCommandRegexp,
-	}
-
-	for _, opt := range opts {
-		if err := opt(c); err != nil {
-			return nil, err
-		}
 	}
 
 	if err := c.validateBinary(); err != nil {
