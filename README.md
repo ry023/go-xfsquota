@@ -19,6 +19,12 @@ Installation can be done with a normal `go get`:
 go get github.com/ry023/go-xfsquota-wrapper
 ```
 
+And, import package on your Go code.
+
+```go
+import xq "github.com/ry023/go-xfsquota-wrapper"
+```
+
 ## Usage
 
 Please see also [examples/](./examples)
