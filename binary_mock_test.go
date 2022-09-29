@@ -3,8 +3,9 @@ package xfsquota
 import (
 	"context"
 	"io"
-	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 type MockBinary struct {
@@ -28,7 +29,7 @@ func (m *MockBinary) Validate() error {
 }
 
 func (m *MockBinary) AssertArgs(t *testing.T) {
-	if !reflect.DeepEqual(m.ActualArgs, m.ExpectedArgs) {
-		t.Errorf("Args on mary exection not match! expected is `%v` but actual `%v`", m.ExpectedArgs, m.ActualArgs)
+	if diff := cmp.Diff(m.ExpectedArgs, m.ActualArgs); diff != "" {
+		t.Errorf("Args on mary exection not match!\n%v`", diff)
 	}
 }
