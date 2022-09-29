@@ -31,7 +31,7 @@ func main() {
 		Isoft: 8192,
 		Ihard: 8192,
 	}
-	err = cli.Command(fsPath, nil).LimitWithId(ctx, 100, xq.QuotaTypeProject, xq.QuotaTargetTypeBlocks, limitopt)
+	err = cli.Command(fsPath, nil).LimitWithId(ctx, 100, xq.QuotaTypeProject, limitopt)
 	if err != nil {
 		log.Fatalf("caused error on execution: %v", err)
 	}
