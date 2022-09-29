@@ -6,7 +6,7 @@ import (
 	"io"
 	"regexp"
 	"strconv"
-	"strings"
+  "strings"
 )
 
 type reportCommandArgs struct {
@@ -29,27 +29,27 @@ type ReportCommandOption struct {
 	UpperId uint32
 }
 
-func (o reportCommandArgs) subCommandString() string {
-	cmds := []string{}
-	cmds = append(cmds, "report")
+func (o reportCommandArgs) buildArgs() []string {
+	args := []string{}
+	args = append(args, "report")
 
-	cmds = append(cmds, o.quotaType.Flag())
-	cmds = append(cmds, o.quotaTargetType.Flag())
+	args = append(args, o.quotaType.Flag())
+	args = append(args, o.quotaTargetType.Flag())
 
 	// Force to numetric mode for parsing
-	cmds = append(cmds, "-N")
+	args = append(args, "-N")
 
 	if o.opt.LowerId != 0 {
-		cmds = append(cmds, "-L")
-		cmds = append(cmds, strconv.FormatUint(uint64(o.opt.LowerId), 10))
+		args = append(args, "-L")
+		args = append(args, strconv.FormatUint(uint64(o.opt.LowerId), 10))
 	}
 
 	if o.opt.UpperId != 0 {
-		cmds = append(cmds, "-L")
-		cmds = append(cmds, strconv.FormatUint(uint64(o.opt.UpperId), 10))
+		args = append(args, "-L")
+		args = append(args, strconv.FormatUint(uint64(o.opt.UpperId), 10))
 	}
 
-	return strings.Join(cmds, " ")
+	return args
 }
 
 func (c *Command) Report(ctx context.Context, quotaType QuotaType, quotaTargetType QuotaTargetType, opt ReportCommandOption) (*ReportResult, error) {

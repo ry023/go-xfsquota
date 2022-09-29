@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"strconv"
-	"strings"
 )
 
 type LimitCommandOption struct {
@@ -40,45 +39,45 @@ type limitCommandArgs struct {
 	opt LimitCommandOption
 }
 
-func (o limitCommandArgs) subCommandString() string {
-	cmds := []string{}
-	cmds = append(cmds, "limit")
+func (o limitCommandArgs) buildArgs() []string {
+	args := []string{}
+	args = append(args, "limit")
 
-	cmds = append(cmds, o.quotaType.Flag())
+	args = append(args, o.quotaType.Flag())
 
 	if o.opt.Bsoft != 0 {
-		cmds = append(cmds, fmt.Sprintf("bsoft=%d", o.opt.Bsoft))
+		args = append(args, fmt.Sprintf("bsoft=%d", o.opt.Bsoft))
 	}
 
 	if o.opt.Bhard != 0 {
-		cmds = append(cmds, fmt.Sprintf("bhard=%d", o.opt.Bhard))
+		args = append(args, fmt.Sprintf("bhard=%d", o.opt.Bhard))
 	}
 
 	if o.opt.Isoft != 0 {
-		cmds = append(cmds, fmt.Sprintf("isoft=%d", o.opt.Isoft))
+		args = append(args, fmt.Sprintf("isoft=%d", o.opt.Isoft))
 	}
 
 	if o.opt.Ihard != 0 {
-		cmds = append(cmds, fmt.Sprintf("ihard=%d", o.opt.Ihard))
+		args = append(args, fmt.Sprintf("ihard=%d", o.opt.Ihard))
 	}
 
 	if o.opt.Rtbsoft != 0 {
-		cmds = append(cmds, fmt.Sprintf("rtbsoft=%d", o.opt.Rtbsoft))
+		args = append(args, fmt.Sprintf("rtbsoft=%d", o.opt.Rtbsoft))
 	}
 
 	if o.opt.Rtbhard != 0 {
-		cmds = append(cmds, fmt.Sprintf("rtbhard=%d", o.opt.Rtbhard))
+		args = append(args, fmt.Sprintf("rtbhard=%d", o.opt.Rtbhard))
 	}
 
 	for _, id := range o.id {
-		cmds = append(cmds, strconv.FormatUint(uint64(id), 10))
+		args = append(args, strconv.FormatUint(uint64(id), 10))
 	}
 
 	for _, name := range o.name {
-		cmds = append(cmds, name)
+		args = append(args, name)
 	}
 
-	return strings.Join(cmds, " ")
+	return args
 }
 
 func (c *Command) LimitWithId(ctx context.Context, id uint32, quotaType QuotaType, opt LimitCommandOption) error {

@@ -3,7 +3,6 @@ package xfsquota
 import (
 	"context"
 	"strconv"
-	"strings"
 )
 
 type projectCommandArgs struct {
@@ -39,38 +38,38 @@ const (
 //
 // format:
 //   project [ -cCs [ -d depth ] [ -p path ] id | name ]
-func (o projectCommandArgs) subCommandString() string {
-	cmds := []string{}
-	cmds = append(cmds, "project")
+func (o projectCommandArgs) buildArgs() []string {
+	args := []string{}
+	args = append(args, "project")
 
 	if o.opt.Depth != 0 {
-		cmds = append(cmds, "-d")
-		cmds = append(cmds, strconv.FormatUint(uint64(o.opt.Depth), 10))
+		args = append(args, "-d")
+		args = append(args, strconv.FormatUint(uint64(o.opt.Depth), 10))
 	}
 
 	if o.opt.Path != "" {
-		cmds = append(cmds, "-p")
-		cmds = append(cmds, o.opt.Path)
+		args = append(args, "-p")
+		args = append(args, o.opt.Path)
 	}
 
 	switch o.operation {
 	case ProjectSetupOps:
-		cmds = append(cmds, "-s")
+		args = append(args, "-s")
 	case ProjectClearOps:
-		cmds = append(cmds, "-C")
+		args = append(args, "-C")
 	case ProjectCheckOps:
-		cmds = append(cmds, "-c")
+		args = append(args, "-c")
 	}
 
 	for _, id := range o.id {
-		cmds = append(cmds, strconv.FormatUint(uint64(id), 10))
+		args = append(args, strconv.FormatUint(uint64(id), 10))
 	}
 
 	for _, name := range o.name {
-		cmds = append(cmds, name)
+		args = append(args, name)
 	}
 
-	return strings.Join(cmds, " ")
+	return args
 }
 
 func (c *Command) OperateProjectWithId(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error {

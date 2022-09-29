@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"io"
+	"strings"
 )
 
 type Command struct {
@@ -36,7 +37,7 @@ type GlobalOption struct {
 // Interface to generate subcommands to specify for the -c option
 type subCommandArgs interface {
 	// Generate subcommand text
-	subCommandString() string
+	buildArgs() []string
 }
 
 func NewCommand(binary BinaryExecuter, filesystemPath string, globalOpt *GlobalOption) *Command {
@@ -89,7 +90,7 @@ func (c *Command) buildArgs() []string {
 	}
 
 	args = append(args, "-c")
-	args = append(args, c.subCmdArgs.subCommandString())
+	args = append(args, strings.Join(c.subCmdArgs.buildArgs(), " "))
 
 	for _, d := range c.GlobalOpt.Projects {
 		args = append(args, "-d")
