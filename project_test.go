@@ -66,7 +66,7 @@ func TestCommand_OperateProjectWithId(t *testing.T) {
 			}
 
 			bin := &MockBinary{ExpectedArgs: tt.expectBinArgs}
-			cmd := NewCommand(bin, tt.newCommandArgs.filesystemPath, nil, tt.newCommandArgs.globalOpt)
+			cmd := NewCommand(bin, tt.newCommandArgs.filesystemPath, tt.newCommandArgs.globalOpt)
 
 			err := cmd.OperateProjectWithId(tt.args.ctx, tt.args.op, tt.args.id, tt.args.opt)
 

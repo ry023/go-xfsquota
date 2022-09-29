@@ -55,7 +55,7 @@ func TestCommand_ReportWithId(t *testing.T) {
 #200                 0          4      10240     00 [--------]`)
 
 			bin := &MockBinary{ExpectedArgs: tt.expectBinArgs,Out:          out,}
-			cmd := NewCommand(bin, tt.newCommandArgs.filesystemPath, nil, tt.newCommandArgs.globalOpt)
+      cmd := NewCommand(bin, tt.newCommandArgs.filesystemPath, tt.newCommandArgs.globalOpt)
 
 			_, err := cmd.Report(tt.args.ctx, tt.args.quotaType, tt.args.quotaTargetType, tt.args.opt)
 

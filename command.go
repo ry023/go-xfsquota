@@ -19,7 +19,6 @@ type Command struct {
 
 	systemStdoutBuf *bytes.Buffer
 	systemStderrBuf *bytes.Buffer
-	logger          Logger
 }
 
 type GlobalOption struct {
@@ -40,18 +39,13 @@ type subCommandArgs interface {
 	subCommandString() string
 }
 
-func NewCommand(binary BinaryExecuter, filesystemPath string, logger Logger, globalOpt *GlobalOption) *Command {
+func NewCommand(binary BinaryExecuter, filesystemPath string, globalOpt *GlobalOption) *Command {
 	cmd := &Command{
 		Binary:         binary,
 		FileSystemPath: filesystemPath,
 
 		systemStdoutBuf: new(bytes.Buffer),
 		systemStderrBuf: new(bytes.Buffer),
-		logger:          logger,
-	}
-
-	if cmd.logger == nil {
-		cmd.logger = &StandardLog{}
 	}
 
 	if globalOpt != nil {

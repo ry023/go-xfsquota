@@ -21,8 +21,6 @@ type XfsQuotaClient struct {
 	IgnoreVersionConstraint bool
 	// Regexp used for parsing stdout of version command. (DefaultVersionCommandRegexp is used normally)
 	VersionCommandRegexp *regexp.Regexp
-	// Logger interface for reporting internal
-	Logger Logger
 }
 
 const DefaultVersionConstraint = ">= 5.13.0"
@@ -101,5 +99,5 @@ func (c *XfsQuotaClient) validateBinary() error {
 }
 
 func (c *XfsQuotaClient) Command(filesystemPath string, opt *GlobalOption) *Command {
-	return NewCommand(c.Binary, filesystemPath, c.Logger, opt)
+	return NewCommand(c.Binary, filesystemPath, opt)
 }
