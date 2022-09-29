@@ -50,6 +50,10 @@ func NewCommand(binary BinaryExecuter, filesystemPath string, logger Logger, glo
 		logger:          logger,
 	}
 
+	if cmd.logger == nil {
+		cmd.logger = &StandardLog{}
+	}
+
 	if globalOpt != nil {
 		cmd.GlobalOpt = *globalOpt
 	}
