@@ -1,3 +1,4 @@
+// +build linux
 package xfsquota
 
 type QuotaType string
