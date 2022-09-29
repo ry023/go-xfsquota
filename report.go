@@ -1,6 +1,7 @@
 package xfsquota
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"regexp"
@@ -51,14 +52,14 @@ func (o reportCommandArgs) subCommandString() string {
 	return strings.Join(cmds, " ")
 }
 
-func (c *Command) Report(quotaType QuotaType, quotaTargetType QuotaTargetType, opt ReportCommandOption) (*ReportResult, error) {
+func (c *Command) Report(ctx context.Context, quotaType QuotaType, quotaTargetType QuotaTargetType, opt ReportCommandOption) (*ReportResult, error) {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.subCmdArgs = reportCommandArgs{
 		quotaType:       quotaType,
 		quotaTargetType: quotaTargetType,
 		opt:             opt,
 	}
-	err := c.Execute()
+	err := c.Execute(ctx)
 	if err != nil {
 		return nil, err
 	}

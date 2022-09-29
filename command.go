@@ -2,6 +2,7 @@ package xfsquota
 
 import (
 	"bytes"
+	"context"
 	"io"
 )
 
@@ -54,7 +55,7 @@ func NewCommand(binary BinaryExecuter, filesystemPath string, globalOpt *GlobalO
 	return cmd
 }
 
-func (c *Command) Execute() error {
+func (c *Command) Execute(ctx context.Context) error {
 	args := c.buildArgs()
 
 	var stdout io.Writer
@@ -72,7 +73,7 @@ func (c *Command) Execute() error {
 		stderr = io.MultiWriter(c.Stderr, c.systemStderrBuf)
 	}
 
-	return c.Binary.Execute(stdout, stderr, args...)
+	return c.Binary.Execute(ctx, stdout, stderr, args...)
 }
 
 func (c *Command) buildArgs() []string {

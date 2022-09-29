@@ -1,6 +1,7 @@
 package xfsquota
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -80,22 +81,22 @@ func (o limitCommandArgs) subCommandString() string {
 	return strings.Join(cmds, " ")
 }
 
-func (c *Command) LimitWithId(id uint32, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
+func (c *Command) LimitWithId(ctx context.Context, id uint32, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.subCmdArgs = limitCommandArgs{
 		id:        []uint32{id},
 		quotaType: quotaType,
 		opt:       opt,
 	}
-	return c.Execute()
+	return c.Execute(ctx)
 }
 
-func (c *Command) LimitWithName(name string, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
+func (c *Command) LimitWithName(ctx context.Context, name string, quotaType QuotaType, quotaTargetType QuotaTargetType, opt LimitCommandOption) error {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.subCmdArgs = limitCommandArgs{
 		name:      []string{name},
 		quotaType: quotaType,
 		opt:       opt,
 	}
-	return c.Execute()
+	return c.Execute(ctx)
 }

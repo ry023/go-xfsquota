@@ -2,9 +2,11 @@ package xfsquota
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"regexp"
+	"time"
 
 	v "github.com/hashicorp/go-version"
 )
@@ -32,8 +34,8 @@ func NewClient(binaryPath string, opts ...NewClientOption) (*XfsQuotaClient, err
 		Binary: &XfsQuotaBinary{
 			Path: binaryPath,
 		},
-		VersionConstraint: DefaultVersionConstraint,
-    VersionCommandRegexp: DefaultVersionCommandRegexp,
+		VersionConstraint:    DefaultVersionConstraint,
+		VersionCommandRegexp: DefaultVersionCommandRegexp,
 	}
 
 	for _, opt := range opts {
@@ -51,7 +53,11 @@ func NewClient(binaryPath string, opts ...NewClientOption) (*XfsQuotaClient, err
 
 func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
 	var stdout bytes.Buffer
-	if err := c.Binary.Execute(&stdout, nil, "-V"); err != nil {
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+	defer cancel()
+
+	if err := c.Binary.Execute(ctx, &stdout, nil, "-V"); err != nil {
 		return "", err
 	}
 

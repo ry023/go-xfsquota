@@ -1,6 +1,7 @@
 package xfsquota
 
 import (
+	"context"
 	"strconv"
 	"strings"
 )
@@ -72,20 +73,20 @@ func (o projectCommandArgs) subCommandString() string {
 	return strings.Join(cmds, " ")
 }
 
-func (c *Command) OperateProjectWithId(op ProjectOpsType, id uint32, opt ProjectCommandOption) error {
+func (c *Command) OperateProjectWithId(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.subCmdArgs = &projectCommandArgs{
 		id:        []uint32{id},
 		operation: op,
 		opt:       opt,
 	}
-	return c.Execute()
+	return c.Execute(ctx)
 }
 
-func (c *Command) SetupProjectWithId(id uint32, opt ProjectCommandOption) error {
-	return c.OperateProjectWithId(ProjectSetupOps, id, opt)
+func (c *Command) SetupProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
+	return c.OperateProjectWithId(ctx, ProjectSetupOps, id, opt)
 }
 
-func (c *Command) ClearProjectWithId(id uint32, opt ProjectCommandOption) error {
-	return c.OperateProjectWithId(ProjectClearOps, id, opt)
+func (c *Command) ClearProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
+	return c.OperateProjectWithId(ctx, ProjectClearOps, id, opt)
 }
