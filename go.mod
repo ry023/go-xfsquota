@@ -1,4 +1,4 @@
-module github.com/ry023/go-xfsquota-wrapper
+module github.com/ry023/go-xfsquota
 
 go 1.19
 

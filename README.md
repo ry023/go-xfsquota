@@ -1,4 +1,4 @@
-# go-xfsquota-wrapper
+# go-xfsquota
 
 A golang wrapper library for xfs_quota commandline tool.
 
@@ -16,13 +16,13 @@ Note also that a child process is created when exec binary.
 Installation can be done with a normal `go get`:
 
 ```
-go get github.com/ry023/go-xfsquota-wrapper
+go get github.com/ry023/go-xfsquota
 ```
 
 And, import package on your Go code.
 
 ```go
-import xq "github.com/ry023/go-xfsquota-wrapper"
+import xfsquota "github.com/ry023/go-xfsquota"
 ```
 
 ## Usage
