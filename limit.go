@@ -10,22 +10,46 @@ import (
 type LimitCommandOption struct {
 	// Equal to `bsoft=N` argument on commandline.
 	// Set quota block soft limits.
-	Bsoft uint32
+	Bsoft *uint32
 	// Equal to `bhard=N` argument on commandline.
 	// Set quota block hard limits.
-	Bhard uint32
+	Bhard *uint32
 	// Equal to `isoft=N` argument on commandline.
 	// Set quota inode count soft limits.
-	Isoft uint32
+	Isoft *uint32
 	// Equal to `ihard=N` argument on commandline.
 	// Set quota inode count hard limits.
-	Ihard uint32
+	Ihard *uint32
 	// Equal to `rtbsoft=N` argument on commandline.
 	// Set quota realtime block soft limits.
-	Rtbsoft uint32
+	Rtbsoft *uint32
 	// Equal to `rtbhard=N` argument on commandline.
 	// Set quota realtime block hard limits.
-	Rtbhard uint32
+	Rtbhard *uint32
+}
+
+func (o LimitCommandOption) SetBsoft(v uint32) {
+	o.Bsoft = &v
+}
+
+func (o LimitCommandOption) SetBhard(v uint32) {
+	o.Bhard = &v
+}
+
+func (o LimitCommandOption) SetIsoft(v uint32) {
+	o.Isoft = &v
+}
+
+func (o LimitCommandOption) SetIhard(v uint32) {
+	o.Ihard = &v
+}
+
+func (o LimitCommandOption) SetRtbsoft(v uint32) {
+	o.Rtbsoft = &v
+}
+
+func (o LimitCommandOption) SetRtbhard(v uint32) {
+	o.Rtbhard = &v
 }
 
 type limitCommandArgs struct {
@@ -46,28 +70,28 @@ func (o limitCommandArgs) buildArgs() []string {
 
 	args = append(args, o.quotaType.Flag())
 
-	if o.opt.Bsoft != 0 {
-		args = append(args, fmt.Sprintf("bsoft=%d", o.opt.Bsoft))
+	if o.opt.Bsoft != nil {
+		args = append(args, fmt.Sprintf("bsoft=%d", *o.opt.Bsoft))
 	}
 
-	if o.opt.Bhard != 0 {
-		args = append(args, fmt.Sprintf("bhard=%d", o.opt.Bhard))
+	if o.opt.Bhard != nil {
+		args = append(args, fmt.Sprintf("bhard=%d", *o.opt.Bhard))
 	}
 
-	if o.opt.Isoft != 0 {
-		args = append(args, fmt.Sprintf("isoft=%d", o.opt.Isoft))
+	if o.opt.Isoft != nil {
+		args = append(args, fmt.Sprintf("isoft=%d", *o.opt.Isoft))
 	}
 
-	if o.opt.Ihard != 0 {
-		args = append(args, fmt.Sprintf("ihard=%d", o.opt.Ihard))
+	if o.opt.Ihard != nil {
+		args = append(args, fmt.Sprintf("ihard=%d", *o.opt.Ihard))
 	}
 
-	if o.opt.Rtbsoft != 0 {
-		args = append(args, fmt.Sprintf("rtbsoft=%d", o.opt.Rtbsoft))
+	if o.opt.Rtbsoft != nil {
+		args = append(args, fmt.Sprintf("rtbsoft=%d", *o.opt.Rtbsoft))
 	}
 
-	if o.opt.Rtbhard != 0 {
-		args = append(args, fmt.Sprintf("rtbhard=%d", o.opt.Rtbhard))
+	if o.opt.Rtbhard != nil {
+		args = append(args, fmt.Sprintf("rtbhard=%d", *o.opt.Rtbhard))
 	}
 
 	for _, id := range o.id {

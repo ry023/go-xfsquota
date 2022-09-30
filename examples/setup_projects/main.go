@@ -25,12 +25,11 @@ func main() {
 	}
 
 	// Limit pquota
-	limitopt := xq.LimitCommandOption{
-		Bsoft: 16384,
-		Bhard: 16384,
-		Isoft: 8192,
-		Ihard: 8192,
-	}
+	limitopt := xq.LimitCommandOption{}
+	limitopt.SetBsoft(16384)
+	limitopt.SetBhard(16384)
+	limitopt.SetIsoft(8192)
+	limitopt.SetIhard(8192)
 	err = cli.Command(fsPath, nil).LimitWithId(ctx, 100, xq.QuotaTypeProject, limitopt)
 	if err != nil {
 		log.Fatalf("caused error on execution: %v", err)
