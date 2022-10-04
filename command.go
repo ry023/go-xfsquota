@@ -23,6 +23,15 @@ type Command struct {
 	systemStderrBuf *bytes.Buffer
 }
 
+type Commander interface {
+	Execute(ctx context.Context) error
+	OperateProjectWithId(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error
+
+	LimitCommander
+	ReportCommander
+	ProjectCommander
+}
+
 type GlobalOption struct {
 	// Equeal to "-p" flag on commandline.
 	// Set the program name for prompts and some error messages, the default value is xfs_quota.

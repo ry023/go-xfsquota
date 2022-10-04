@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+type ProjectCommander interface {
+	SetupProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error
+	ClearProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error
+	CheckProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error
+}
+
 type projectCommandArgs struct {
 	// Setup/Clear/Check operation
 	operation ProjectOpsType

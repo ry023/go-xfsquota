@@ -7,6 +7,11 @@ import (
 	"strconv"
 )
 
+type LimitCommander interface {
+	LimitWithId(ctx context.Context, id uint32, quotaType QuotaType, opt LimitCommandOption) error
+	LimitWithName(ctx context.Context, name string, quotaType QuotaType, opt LimitCommandOption) error
+}
+
 type LimitCommandOption struct {
 	// Equal to `bsoft=N` argument on commandline.
 	// Set quota block soft limits.

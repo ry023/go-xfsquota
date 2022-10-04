@@ -99,6 +99,6 @@ func (c *XfsQuotaClient) validateBinary() error {
 	return nil
 }
 
-func (c *XfsQuotaClient) Command(filesystemPath string, opt *GlobalOption) *Command {
+func (c *XfsQuotaClient) Command(filesystemPath string, opt *GlobalOption) Commander {
 	return NewCommand(c.Binary, filesystemPath, opt)
 }

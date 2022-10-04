@@ -7,8 +7,12 @@ import (
 	"io"
 	"regexp"
 	"strconv"
-  "strings"
+	"strings"
 )
+
+type ReportCommander interface {
+	Report(ctx context.Context, quotaType QuotaType, quotaTargetType QuotaTargetType, opt ReportCommandOption) (*ReportResult, error)
+}
 
 type reportCommandArgs struct {
 	// Equal to `-gpu` flag on commandline.
