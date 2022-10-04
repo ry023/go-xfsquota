@@ -3,7 +3,11 @@ package xfsquota
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 type projectCommandArgs struct {
@@ -89,4 +93,74 @@ func (c *Command) SetupProjectWithId(ctx context.Context, id uint32, opt Project
 
 func (c *Command) ClearProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
 	return c.OperateProjectWithId(ctx, ProjectClearOps, id, opt)
+}
+
+func (c *Command) CheckProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
+	err := c.OperateProjectWithId(ctx, ProjectClearOps, id, opt)
+	if err != nil {
+		return err
+	}
+
+	b, err := io.ReadAll(c.systemStdoutBuf)
+	if err != nil {
+		return err
+	}
+
+	return c.checkOutput(b)
+}
+
+var ProjectCheckRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
+
+type ProjectCheckError struct {
+	Errors []error
+}
+
+func (e *ProjectCheckError) Error() string {
+	if len(e.Errors) == 1 {
+		return e.Errors[0].Error()
+	} else {
+		return fmt.Sprintf("%d error caused when checking a project.", len(e.Errors))
+	}
+}
+
+var ProjectIdNotSetRegexp = regexp.MustCompile(`^(.*) - project identifier is not set`)
+
+type ProjectIdNotSetError struct {
+	Directory string
+}
+
+func (e *ProjectIdNotSetError) Error() string {
+	return fmt.Sprintf("Project identifier is not set on directory (%s)", e.Directory)
+}
+
+var ProjectInheritanceFlagNotSetRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
+
+type ProjectInheritanceFlagNotSetError struct {
+	Directory string
+}
+
+func (e *ProjectInheritanceFlagNotSetError) Error() string {
+	return fmt.Sprintf("Project inheritance flag is not set on directory (%s)", e.Directory)
+}
+
+func (c *Command) checkOutput(b []byte) error {
+	var errs []error
+	lines := strings.Split(string(b), "\n")
+	for _, l := range lines {
+		var submatches []string
+		submatches = ProjectIdNotSetRegexp.FindStringSubmatch(l)
+		if len(submatches) == 2 {
+			errs = append(errs, &ProjectIdNotSetError{Directory: submatches[1]})
+		}
+
+		submatches = ProjectInheritanceFlagNotSetRegexp.FindStringSubmatch(l)
+		if len(submatches) == 2 {
+			errs = append(errs, &ProjectInheritanceFlagNotSetError{Directory: submatches[1]})
+		}
+	}
+
+	if len(errs) > 0 {
+		return &ProjectCheckError{Errors: errs}
+	}
+	return nil
 }
