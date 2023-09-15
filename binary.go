@@ -14,12 +14,12 @@ type BinaryExecuter interface {
 	Validate() error
 }
 
-type XfsQuotaBinary struct {
+type Binary struct {
 	// The path to xfs_quota binary
 	Path string
 }
 
-func (b *XfsQuotaBinary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
+func (b *Binary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
 	e, err := safeexec.LookPath(b.Path)
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func (b *XfsQuotaBinary) Execute(ctx context.Context, stdout io.Writer, stderr i
 	return cmd.Run()
 }
 
-func (b *XfsQuotaBinary) Validate() error {
+func (b *Binary) Validate() error {
 	// Check file existence
 	if _, err := os.Stat(b.Path); err != nil {
 		return err
