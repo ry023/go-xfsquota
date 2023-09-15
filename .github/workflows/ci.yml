@@ -23,6 +23,9 @@ jobs:
           go-version-file: go.mod
           check-latest: true
 
+      - name: Run lint
+        uses: reviewdog/action-golangci-lint@v2
+
       - name: Run tests
         run: make test
 

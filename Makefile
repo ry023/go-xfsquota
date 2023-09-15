@@ -2,6 +2,9 @@
 test:
 	go test ./... -coverprofile=coverage.out -covermode=count
 
+lint:
+	golangci-lint run ./...
+
 depsdev:
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 
