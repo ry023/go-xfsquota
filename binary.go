@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+
+	"github.com/cli/safeexec"
 )
 
 type BinaryExecuter interface {
@@ -12,20 +14,24 @@ type BinaryExecuter interface {
 	Validate() error
 }
 
-type XfsQuotaBinary struct {
+type Binary struct {
 	// The path to xfs_quota binary
 	Path string
 }
 
-func (b *XfsQuotaBinary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
-	cmd := exec.CommandContext(ctx, b.Path, args...)
+func (b *Binary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
+	e, err := safeexec.LookPath(b.Path)
+	if err != nil {
+		return err
+	}
+	cmd := exec.CommandContext(ctx, e, args...)
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
 
 	return cmd.Run()
 }
 
-func (b *XfsQuotaBinary) Validate() error {
+func (b *Binary) Validate() error {
 	// Check file existence
 	if _, err := os.Stat(b.Path); err != nil {
 		return err

@@ -108,9 +108,7 @@ func (o limitCommandArgs) buildArgs() []string {
 		args = append(args, strconv.FormatUint(uint64(id), 10))
 	}
 
-	for _, name := range o.name {
-		args = append(args, name)
-	}
+	args = append(args, o.name...)
 
 	return args
 }

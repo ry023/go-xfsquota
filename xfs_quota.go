@@ -11,8 +11,8 @@ import (
 	v "github.com/hashicorp/go-version"
 )
 
-// xfs_quota wrapper client
-type XfsQuotaClient struct {
+// xfs_quota wrapper client.
+type Client struct {
 	// xfs_quota binary
 	Binary BinaryExecuter
 	// xfs_quota will only run if it satisfies the constraints of this version.
@@ -27,9 +27,9 @@ const DefaultVersionConstraint = ">= 5.13.0"
 
 var DefaultVersionCommandRegexp = regexp.MustCompile(`xfs_quota version\s(.*)\r?\n?$`)
 
-func NewClient(binaryPath string) (*XfsQuotaClient, error) {
-	c := &XfsQuotaClient{
-		Binary: &XfsQuotaBinary{
+func New(binaryPath string) (*Client, error) {
+	c := &Client{
+		Binary: &Binary{
 			Path: binaryPath,
 		},
 		VersionConstraint:    DefaultVersionConstraint,
@@ -43,7 +43,7 @@ func NewClient(binaryPath string) (*XfsQuotaClient, error) {
 	return c, nil
 }
 
-func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
+func (c *Client) GetBinaryVersion() (string, error) {
 	var stdout bytes.Buffer
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
@@ -67,7 +67,7 @@ func (c *XfsQuotaClient) GetBinaryVersion() (string, error) {
 	return version, nil
 }
 
-func (c *XfsQuotaClient) validateBinary() error {
+func (c *Client) validateBinary() error {
 	if err := c.Binary.Validate(); err != nil {
 		return err
 	}
@@ -98,6 +98,6 @@ func (c *XfsQuotaClient) validateBinary() error {
 	return nil
 }
 
-func (c *XfsQuotaClient) Command(filesystemPath string, opt *GlobalOption) Commander {
+func (c *Client) Command(filesystemPath string, opt *GlobalOption) Commander {
 	return NewCommand(c.Binary, filesystemPath, opt)
 }

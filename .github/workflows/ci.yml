@@ -23,6 +23,12 @@ jobs:
           go-version-file: go.mod
           check-latest: true
 
+      - name: Run lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          fail_on_error: true
+          reporter: github-pr-review
+
       - name: Run tests
         run: make test
 

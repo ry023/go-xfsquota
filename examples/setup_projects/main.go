@@ -12,7 +12,7 @@ const binaryPath = "/usr/sbin/xfs_quota"
 const fsPath = "/xfs_root"
 
 func main() {
-	cli, err := xq.NewClient(binaryPath)
+	cli, err := xq.New(binaryPath)
 	if err != nil {
 		log.Fatalf("caused error on creating client: %v", err)
 	}
