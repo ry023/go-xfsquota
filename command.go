@@ -43,7 +43,7 @@ type GlobalOption struct {
 	Projects []string
 }
 
-// Interface to generate subcommands to specify for the -c option
+// Interface to generate subcommands to specify for the -c option.
 type subCommandArgs interface {
 	// Generate subcommand text
 	buildArgs() []string

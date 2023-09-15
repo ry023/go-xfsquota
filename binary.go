@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+
+	"github.com/cli/safeexec"
 )
 
 type BinaryExecuter interface {
@@ -18,7 +20,11 @@ type XfsQuotaBinary struct {
 }
 
 func (b *XfsQuotaBinary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
-	cmd := exec.CommandContext(ctx, b.Path, args...)
+	e, err := safeexec.LookPath(b.Path)
+	if err != nil {
+		return err
+	}
+	cmd := exec.CommandContext(ctx, e, args...)
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
 

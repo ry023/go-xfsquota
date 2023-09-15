@@ -30,6 +30,6 @@ func (m *MockBinary) Validate() error {
 
 func (m *MockBinary) AssertArgs(t *testing.T) {
 	if diff := cmp.Diff(m.ExpectedArgs, m.ActualArgs); diff != "" {
-		t.Errorf("Args on mary exection not match!\n%v`", diff)
+		t.Errorf("Args on mary exception not match!\n%v`", diff)
 	}
 }

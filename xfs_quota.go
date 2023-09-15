@@ -11,7 +11,7 @@ import (
 	v "github.com/hashicorp/go-version"
 )
 
-// xfs_quota wrapper client
+// xfs_quota wrapper client.
 type XfsQuotaClient struct {
 	// xfs_quota binary
 	Binary BinaryExecuter
