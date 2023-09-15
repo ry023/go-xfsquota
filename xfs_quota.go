@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"regexp"
 	"time"
 
@@ -44,21 +43,16 @@ func New(binaryPath string) (*Client, error) {
 }
 
 func (c *Client) GetBinaryVersion() (string, error) {
-	var stdout bytes.Buffer
+	stdout := new(bytes.Buffer)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
-	if err := c.Binary.Execute(ctx, &stdout, nil, "-V"); err != nil {
+	if err := c.Binary.Execute(ctx, stdout, nil, "-V"); err != nil {
 		return "", err
 	}
 
-	stdoutBytes, err := io.ReadAll(&stdout)
-	if err != nil {
-		return "", err
-	}
-
-	submatches := c.VersionCommandRegexp.FindSubmatch(stdoutBytes)
+	submatches := c.VersionCommandRegexp.FindSubmatch(stdout.Bytes())
 	if len(submatches) != 2 {
 		return "", fmt.Errorf("Failed to parse version command stdout by c.VersionCommandRegexp(%s). (submatches=%v)", c.VersionCommandRegexp.String(), submatches)
 	}

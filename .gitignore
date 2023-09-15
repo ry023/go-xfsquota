@@ -19,3 +19,5 @@ tmp/
 
 shared/
 !shared/.placeholder
+
+fake_xfs_quota
