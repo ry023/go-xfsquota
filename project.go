@@ -99,7 +99,7 @@ func (c *Command) ClearProjectWithId(ctx context.Context, id uint32, opt Project
 }
 
 func (c *Command) CheckProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
-	err := c.OperateProjectWithId(ctx, ProjectClearOps, id, opt)
+	err := c.OperateProjectWithId(ctx, ProjectCheckOps, id, opt)
 	if err != nil {
 		return err
 	}
