@@ -10,9 +10,15 @@ import (
 )
 
 type ProjectCommander interface {
-	SetupProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error
-	ClearProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error
-	CheckProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error
+	// SetupDirectoryTree setup directory tree to project identified by projid.
+	// Equeal to "project" subcommand with "-s" flag
+	SetupDirectoryTree(ctx context.Context, projid uint32, opt ProjectCommandOption) error
+	// ClearDirectoryTree clear directory tree to project identified by projid.
+	// Equeal to "project" subcommand with "-C" flag
+	ClearDirectoryTree(ctx context.Context, projid uint32, opt ProjectCommandOption) error
+	// CheckDirectoryTree check directory tree to project identified by projid.
+	// Equeal to "project" subcommand with "-c" flag
+	CheckDirectoryTree(ctx context.Context, projid uint32, opt ProjectCommandOption) error
 }
 
 type projectCommandArgs struct {
@@ -39,15 +45,16 @@ type ProjectCommandOption struct {
 type ProjectOpsType string
 
 const (
-	ProjectSetupOps = ProjectOpsType("Setup")
-	ProjectClearOps = ProjectOpsType("Clear")
-	ProjectCheckOps = ProjectOpsType("Check")
+	ProjectDirTreeSetupOps = ProjectOpsType("Setup")
+	ProjectDirTreeClearOps = ProjectOpsType("Clear")
+	ProjectDirTreeCheckOps = ProjectOpsType("Check")
 )
 
 // Build 'project' subcommand
 //
 // format:
-//   project [ -cCs [ -d depth ] [ -p path ] id | name ]
+//
+//	project [ -cCs [ -d depth ] [ -p path ] id | name ]
 func (o projectCommandArgs) buildArgs() []string {
 	args := []string{}
 	args = append(args, "project")
@@ -63,11 +70,11 @@ func (o projectCommandArgs) buildArgs() []string {
 	}
 
 	switch o.operation {
-	case ProjectSetupOps:
+	case ProjectDirTreeSetupOps:
 		args = append(args, "-s")
-	case ProjectClearOps:
+	case ProjectDirTreeClearOps:
 		args = append(args, "-C")
-	case ProjectCheckOps:
+	case ProjectDirTreeCheckOps:
 		args = append(args, "-c")
 	}
 
@@ -80,7 +87,7 @@ func (o projectCommandArgs) buildArgs() []string {
 	return args
 }
 
-func (c *Command) OperateProjectWithId(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error {
+func (c *Command) OperateDirectoryTree(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error {
 	c.GlobalOpt.EnableExpertMode = true // require expert mode
 	c.subCmdArgs = &projectCommandArgs{
 		id:        []uint32{id},
@@ -90,16 +97,16 @@ func (c *Command) OperateProjectWithId(ctx context.Context, op ProjectOpsType, i
 	return c.Execute(ctx)
 }
 
-func (c *Command) SetupProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
-	return c.OperateProjectWithId(ctx, ProjectSetupOps, id, opt)
+func (c *Command) SetupDirectoryTree(ctx context.Context, projid uint32, opt ProjectCommandOption) error {
+	return c.OperateDirectoryTree(ctx, ProjectDirTreeSetupOps, projid, opt)
 }
 
-func (c *Command) ClearProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
-	return c.OperateProjectWithId(ctx, ProjectClearOps, id, opt)
+func (c *Command) ClearDirectoryTree(ctx context.Context, projid uint32, opt ProjectCommandOption) error {
+	return c.OperateDirectoryTree(ctx, ProjectDirTreeClearOps, projid, opt)
 }
 
-func (c *Command) CheckProjectWithId(ctx context.Context, id uint32, opt ProjectCommandOption) error {
-	err := c.OperateProjectWithId(ctx, ProjectCheckOps, id, opt)
+func (c *Command) CheckDirectoryTree(ctx context.Context, projid uint32, opt ProjectCommandOption) error {
+	err := c.OperateDirectoryTree(ctx, ProjectDirTreeCheckOps, projid, opt)
 	if err != nil {
 		return err
 	}

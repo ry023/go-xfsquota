@@ -43,7 +43,7 @@ func TestProject(t *testing.T) {
 				filesystemPath: "/xfs_root",
 			},
 			args: args{
-				op: xfsquota.ProjectSetupOps,
+				op: xfsquota.ProjectDirTreeSetupOps,
 				id: 100,
 				opt: xfsquota.ProjectCommandOption{
 					Depth: 5,
@@ -69,7 +69,7 @@ func TestProject(t *testing.T) {
 				filesystemPath: "/xfs_root",
 			},
 			args: args{
-				op: xfsquota.ProjectClearOps,
+				op: xfsquota.ProjectDirTreeClearOps,
 				id: 100,
 				opt: xfsquota.ProjectCommandOption{
 					Depth: 5,
@@ -94,7 +94,7 @@ func TestProject(t *testing.T) {
 				filesystemPath: "/xfs_root",
 			},
 			args: args{
-				op: xfsquota.ProjectSetupOps,
+				op: xfsquota.ProjectDirTreeSetupOps,
 				id: 100,
 				opt: xfsquota.ProjectCommandOption{
 					Depth: 5,
@@ -120,7 +120,7 @@ func TestProject(t *testing.T) {
 				filesystemPath: "/xfs_root",
 			},
 			args: args{
-				op: xfsquota.ProjectSetupOps,
+				op: xfsquota.ProjectDirTreeSetupOps,
 				id: 101,
 				opt: xfsquota.ProjectCommandOption{
 					Depth: 5,
@@ -158,7 +158,7 @@ func TestProject(t *testing.T) {
 				t.Fatal(err)
 			}
 			c := q.Command(tt.newCommandArgs.filesystemPath, nil)
-			if err := c.OperateProjectWithId(ctx, tt.args.op, tt.args.id, tt.args.opt); err != nil {
+			if err := c.OperateDirectoryTree(ctx, tt.args.op, tt.args.id, tt.args.opt); err != nil {
 				t.Fatal(err)
 			}
 			r, err := c.Report(ctx, xfsquota.QuotaTypeProject, xfsquota.QuotaTargetTypeBlocks, xfsquota.ReportCommandOption{})
