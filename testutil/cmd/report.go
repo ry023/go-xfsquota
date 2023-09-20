@@ -13,6 +13,9 @@ import (
 const dbPrefix = "fake_xfs_quota_db_"
 
 func cmdReport(w io.Writer, args []string, mountPath string) error {
+	if !slices.Contains(args, "-N") {
+		return fmt.Errorf("fake_xfs_quota: invalid or unsupported command: %s", args)
+	}
 	p := storeJSONName(mountPath)
 	if _, err := os.Stat(p); err != nil {
 		return fmt.Errorf("fake_xfs_quota: %w", err)
