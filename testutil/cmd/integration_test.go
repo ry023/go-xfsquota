@@ -21,7 +21,6 @@ func TestNew(t *testing.T) {
 
 func TestProject(t *testing.T) {
 	type args struct {
-		ctx context.Context
 		op  xfsquota.ProjectOpsType
 		id  uint32
 		opt xfsquota.ProjectCommandOption
@@ -29,7 +28,6 @@ func TestProject(t *testing.T) {
 
 	type newCommandArgs struct {
 		filesystemPath string
-		globalOpt      *xfsquota.GlobalOption
 	}
 
 	tests := []struct {

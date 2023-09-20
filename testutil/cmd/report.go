@@ -24,12 +24,12 @@ func cmdReport(w io.Writer, args []string, mountPath string) error {
 	if err := json.Unmarshal(b, &q); err != nil {
 		return fmt.Errorf("fake_xfs_quota: %w", err)
 	}
-	fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", 0, 0, 0, 0) // default #0
+	_, _ = fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", 0, 0, 0, 0) // default #0
 	for _, p := range q.Projects {
 		if len(p.Paths) == 0 && p.Bhard == 0 && p.Bsoft == 0 && p.Ihard == 0 && p.Isoft == 0 {
 			continue
 		}
-		fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", p.ID, 0, p.Bsoft, p.Bhard)
+		_, _ = fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", p.ID, 0, p.Bsoft, p.Bhard)
 	}
 	return nil
 }
