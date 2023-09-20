@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"sort"
 	"strings"
 )
 
@@ -29,7 +30,13 @@ func cmdReport(w io.Writer, args []string, mountPath string) error {
 		return fmt.Errorf("fake_xfs_quota: %w", err)
 	}
 	_, _ = fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", 0, 0, 0, 0) // default #0
-	for _, p := range q.Projects {
+	keys := make([]int, 0, len(q.Projects))
+	for k := range q.Projects {
+		keys = append(keys, int(k))
+	}
+	sort.Ints(keys)
+	for _, k := range keys {
+		p := q.Projects[uint32(k)]
 		if len(p.Paths) == 0 && p.Bhard == 0 && p.Bsoft == 0 && p.Ihard == 0 && p.Isoft == 0 {
 			continue
 		}
