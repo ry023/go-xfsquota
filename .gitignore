@@ -21,3 +21,4 @@ shared/
 !shared/.placeholder
 
 fake_xfs_quota
+fake_xfs_quota_db_*.json

@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 )
 
@@ -29,7 +30,12 @@ func cmdReport(w io.Writer, args []string, mountPath string) error {
 		if len(p.Paths) == 0 && p.Bhard == 0 && p.Bsoft == 0 && p.Ihard == 0 && p.Isoft == 0 {
 			continue
 		}
-		_, _ = fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", p.ID, 0, p.Bsoft, p.Bhard)
+		switch {
+		case slices.Contains(args, "-i"):
+			_, _ = fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", p.ID, 0, p.Isoft, p.Ihard)
+		default:
+			_, _ = fmt.Fprintf(w, "#%d%10d%10d%10d       00 [--------]\n", p.ID, 0, p.Bsoft, p.Bhard)
+		}
 	}
 	return nil
 }
