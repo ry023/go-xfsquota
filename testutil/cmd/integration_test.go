@@ -2,6 +2,7 @@ package cmd_test
 
 import (
 	"context"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -87,11 +88,68 @@ func TestProject(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "setup project2",
+			newCommandArgs: newCommandArgs{
+				filesystemPath: "/xfs_root",
+			},
+			args: args{
+				op: xfsquota.ProjectSetupOps,
+				id: 100,
+				opt: xfsquota.ProjectCommandOption{
+					Depth: 5,
+					Path:  "/xfs_root/dir",
+				},
+			},
+			expectReport: []xfsquota.ReportSet{
+				{
+					QuotaType:       xfsquota.QuotaTypeProject,
+					QuotaTargetType: xfsquota.QuotaTargetTypeBlocks,
+					MountPath:       "/xfs_root",
+					DevicePath:      "",
+					ReportValues: []xfsquota.ReportValue{
+						{},
+						{Id: 100, Used: 0, Soft: 0, Hard: 0, Grace: 0},
+					},
+				},
+			},
+		},
+		{
+			name: "setup project3",
+			newCommandArgs: newCommandArgs{
+				filesystemPath: "/xfs_root",
+			},
+			args: args{
+				op: xfsquota.ProjectSetupOps,
+				id: 101,
+				opt: xfsquota.ProjectCommandOption{
+					Depth: 5,
+					Path:  "/xfs_root/dir2",
+				},
+			},
+			expectReport: []xfsquota.ReportSet{
+				{
+					QuotaType:       xfsquota.QuotaTypeProject,
+					QuotaTargetType: xfsquota.QuotaTargetTypeBlocks,
+					MountPath:       "/xfs_root",
+					DevicePath:      "",
+					ReportValues: []xfsquota.ReportValue{
+						{},
+						{Id: 100, Used: 0, Soft: 0, Hard: 0, Grace: 0},
+						{Id: 101, Used: 0, Soft: 0, Hard: 0, Grace: 0},
+					},
+				},
+			},
+		},
 	}
 	p, err := filepath.Abs("../../fake_xfs_quota")
 	if err != nil {
 		t.Fatal(err)
 	}
+	if _, err := exec.Command(p, "--fake-init").CombinedOutput(); err != nil {
+		t.Fatal(err)
+	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			ctx := context.Background()
@@ -99,7 +157,7 @@ func TestProject(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			c := q.Command(tt.newCommandArgs.filesystemPath, &xfsquota.GlobalOption{})
+			c := q.Command(tt.newCommandArgs.filesystemPath, nil)
 			if err := c.OperateProjectWithId(ctx, tt.args.op, tt.args.id, tt.args.opt); err != nil {
 				t.Fatal(err)
 			}

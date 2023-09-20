@@ -3,15 +3,17 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/mattn/go-shellwords"
 	"github.com/spf13/cobra"
 )
 
 var (
-	version bool
-	dummyX  bool
-	dummyC  bool
+	version  bool
+	dummyX   bool
+	dummyC   bool
+	fakeInit bool
 )
 
 var rootCmd = &cobra.Command{
@@ -21,6 +23,18 @@ var rootCmd = &cobra.Command{
 	Args: func(cmd *cobra.Command, args []string) error {
 		if version {
 			fmt.Println("fake_xfs_quota version 5.13.0")
+			os.Exit(0)
+		}
+		if fakeInit {
+			matches, err := filepath.Glob(fmt.Sprintf("%s*", dbPrefix))
+			if err != nil {
+				return fmt.Errorf("fake_xfs_quota: %w", err)
+			}
+			for _, m := range matches {
+				if err := os.Remove(m); err != nil {
+					return fmt.Errorf("fake_xfs_quota: %w", err)
+				}
+			}
 			os.Exit(0)
 		}
 		if len(args) != 2 {
@@ -57,5 +71,6 @@ func Execute() {
 func init() {
 	rootCmd.Flags().BoolVarP(&dummyX, "x", "x", false, "Dummy flag")
 	rootCmd.Flags().BoolVarP(&dummyC, "c", "c", false, "Dummy flag")
+	rootCmd.Flags().BoolVarP(&fakeInit, "fake-init", "", false, "Initialize fake quota")
 	rootCmd.Flags().BoolVarP(&version, "version", "V", false, "Show version and exit")
 }
