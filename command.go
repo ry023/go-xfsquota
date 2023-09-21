@@ -24,7 +24,7 @@ type Command struct {
 
 type Commander interface {
 	Execute(ctx context.Context) error
-	OperateProjectWithId(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error
+	OperateDirectoryTree(ctx context.Context, op ProjectOpsType, id uint32, opt ProjectCommandOption) error
 
 	LimitCommander
 	ReportCommander

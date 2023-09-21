@@ -43,17 +43,17 @@ func cmdProject(w io.Writer, args []string, mountPath string) error {
 			continue
 		case a == "-s":
 			// setup
-			ptype = xfsquota.ProjectSetupOps
+			ptype = xfsquota.ProjectDirTreeSetupOps
 			i++
 			continue
 		case a == "-C":
 			// clear
-			ptype = xfsquota.ProjectClearOps
+			ptype = xfsquota.ProjectDirTreeClearOps
 			i++
 			continue
 		case a == "-c":
 			// check
-			ptype = xfsquota.ProjectCheckOps
+			ptype = xfsquota.ProjectDirTreeCheckOps
 			i++
 			continue
 		case strings.HasPrefix(a, "-"):
@@ -80,15 +80,15 @@ func cmdProject(w io.Writer, args []string, mountPath string) error {
 		proj = Project{ID: id}
 	}
 	switch ptype {
-	case xfsquota.ProjectSetupOps:
+	case xfsquota.ProjectDirTreeSetupOps:
 		if !slices.Contains(proj.Paths, path) {
 			proj.Paths = append(proj.Paths, path)
 		}
-	case xfsquota.ProjectClearOps:
+	case xfsquota.ProjectDirTreeClearOps:
 		proj.Paths = slices.DeleteFunc(proj.Paths, func(p string) bool {
 			return p == path
 		})
-	case xfsquota.ProjectCheckOps:
+	case xfsquota.ProjectDirTreeCheckOps:
 	}
 	if len(proj.Paths) == 0 && proj.Bhard == 0 && proj.Bsoft == 0 && proj.Ihard == 0 && proj.Isoft == 0 {
 		delete(q.Projects, id)
