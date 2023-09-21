@@ -1,9 +1,7 @@
 package cmd_test
 
 import (
-	"bytes"
 	"context"
-	"fmt"
 	"os/exec"
 	"path/filepath"
 	"testing"
@@ -256,11 +254,7 @@ func TestLimit(t *testing.T) {
 				t.Fatal(err)
 			}
 			c := q.Command(tt.newCommandArgs.filesystemPath, nil)
-			buf := new(bytes.Buffer)
-			c.Stdout = buf
-			c.Stderr = buf
 			if err := c.LimitWithId(ctx, tt.args.id, tt.args.quotaType, tt.args.opt); err != nil {
-				fmt.Printf("%s\n", buf.String())
 				t.Fatal(err)
 			}
 			r, err := c.Report(ctx, xfsquota.QuotaTypeProject, xfsquota.QuotaTargetTypeBlocks, xfsquota.ReportCommandOption{})
