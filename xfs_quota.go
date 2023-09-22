@@ -92,6 +92,6 @@ func (c *Client) validateBinary() error {
 	return nil
 }
 
-func (c *Client) Command(filesystemPath string, opt *GlobalOption) *Command {
+func (c *Client) Command(filesystemPath string, opt *GlobalOption) Commander {
 	return NewCommand(c.Binary, filesystemPath, opt)
 }
