@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.1](https://github.com/ry023/go-xfsquota/compare/v0.1.0...v0.1.1) - 2023-09-22
+### Other Changes
+- Revert "Return implementation, not interface." by @k1LoW in https://github.com/ry023/go-xfsquota/pull/14
+
 ## [v0.1.0](https://github.com/ry023/go-xfsquota/compare/v0.0.1...v0.1.0) - 2023-09-21
 ### Breaking Changes 🛠
 - Set linter by @k1LoW in https://github.com/ry023/go-xfsquota/pull/8
