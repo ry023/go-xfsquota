@@ -46,7 +46,7 @@ func TestCommand_LimitWithId(t *testing.T) {
 				tt.args.ctx = context.Background() // Default
 			}
 
-			bin := &MockBinary{ExpectedArgs: tt.expectBinArgs}
+			bin := &mockBinary{ExpectedArgs: tt.expectBinArgs}
 			cmd := NewCommand(bin, tt.newCommandArgs.filesystemPath, tt.newCommandArgs.globalOpt)
 
 			err := cmd.LimitWithId(tt.args.ctx, tt.args.id, tt.args.quotaType, tt.args.opt)

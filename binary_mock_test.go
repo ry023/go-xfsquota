@@ -8,13 +8,13 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-type MockBinary struct {
+type mockBinary struct {
 	ExpectedArgs []string
 	ActualArgs   []string
 	Out          []byte
 }
 
-func (m *MockBinary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
+func (m *mockBinary) Execute(ctx context.Context, stdout io.Writer, stderr io.Writer, args ...string) error {
 	m.ActualArgs = args
 
 	if len(m.Out) > 0 {
@@ -24,11 +24,11 @@ func (m *MockBinary) Execute(ctx context.Context, stdout io.Writer, stderr io.Wr
 	return nil
 }
 
-func (m *MockBinary) Validate() error {
+func (m *mockBinary) Validate() error {
 	return nil
 }
 
-func (m *MockBinary) AssertArgs(t *testing.T) {
+func (m *mockBinary) AssertArgs(t *testing.T) {
 	if diff := cmp.Diff(m.ExpectedArgs, m.ActualArgs); diff != "" {
 		t.Errorf("Args on mary exception not match!\n%v`", diff)
 	}

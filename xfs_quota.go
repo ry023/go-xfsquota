@@ -22,17 +22,17 @@ type Client struct {
 	VersionCommandRegexp *regexp.Regexp
 }
 
-const DefaultVersionConstraint = ">= 5.13.0"
+const defaultVersionConstraint = ">= 5.13.0"
 
-var DefaultVersionCommandRegexp = regexp.MustCompile(`xfs_quota version\s(.*)\r?\n?$`)
+var defaultVersionCommandRegexp = regexp.MustCompile(`xfs_quota version\s(.*)\r?\n?$`)
 
 func New(binaryPath string) (*Client, error) {
 	c := &Client{
 		Binary: &Binary{
 			Path: binaryPath,
 		},
-		VersionConstraint:    DefaultVersionConstraint,
-		VersionCommandRegexp: DefaultVersionCommandRegexp,
+		VersionConstraint:    defaultVersionConstraint,
+		VersionCommandRegexp: defaultVersionCommandRegexp,
 	}
 
 	if err := c.validateBinary(); err != nil {

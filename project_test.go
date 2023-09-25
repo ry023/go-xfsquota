@@ -37,7 +37,7 @@ func TestCommand_SetupDirectoryTree(t *testing.T) {
 				tt.args.ctx = context.Background() // Default
 			}
 
-			bin := &MockBinary{ExpectedArgs: tt.expectBinArgs}
+			bin := &mockBinary{ExpectedArgs: tt.expectBinArgs}
 			cmd := NewCommand(bin, "/xfs_root", &GlobalOption{})
 
 			err := cmd.SetupDirectoryTree(tt.args.ctx, tt.args.projid, tt.args.opt)
@@ -82,7 +82,7 @@ func TestCommand_ClearDirectoryTree(t *testing.T) {
 				tt.args.ctx = context.Background() // Default
 			}
 
-			bin := &MockBinary{ExpectedArgs: tt.expectBinArgs}
+			bin := &mockBinary{ExpectedArgs: tt.expectBinArgs}
 			cmd := NewCommand(bin, "/xfs_root", &GlobalOption{})
 
 			err := cmd.ClearDirectoryTree(tt.args.ctx, tt.args.projid, tt.args.opt)
@@ -127,7 +127,7 @@ func TestCommand_CheckDirectoryTree(t *testing.T) {
 				tt.args.ctx = context.Background() // Default
 			}
 
-			bin := &MockBinary{ExpectedArgs: tt.expectBinArgs}
+			bin := &mockBinary{ExpectedArgs: tt.expectBinArgs}
 			cmd := NewCommand(bin, "/xfs_root", &GlobalOption{})
 
 			err := cmd.CheckDirectoryTree(tt.args.ctx, tt.args.projid, tt.args.opt)
