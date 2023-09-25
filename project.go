@@ -119,8 +119,6 @@ func (c *Command) CheckDirectoryTree(ctx context.Context, projid uint32, opt Pro
 	return c.checkOutput(b)
 }
 
-var projectCheckRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
-
 type ProjectCheckError struct {
 	Errors []error
 }
