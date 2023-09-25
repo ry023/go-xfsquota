@@ -119,7 +119,7 @@ func (c *Command) CheckDirectoryTree(ctx context.Context, projid uint32, opt Pro
 	return c.checkOutput(b)
 }
 
-var ProjectCheckRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
+var projectCheckRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
 
 type ProjectCheckError struct {
 	Errors []error
@@ -133,7 +133,7 @@ func (e *ProjectCheckError) Error() string {
 	}
 }
 
-var ProjectIdNotSetRegexp = regexp.MustCompile(`^(.*) - project identifier is not set`)
+var projectIdNotSetRegexp = regexp.MustCompile(`^(.*) - project identifier is not set`)
 
 type ProjectIdNotSetError struct {
 	Directory string
@@ -143,7 +143,7 @@ func (e *ProjectIdNotSetError) Error() string {
 	return fmt.Sprintf("Project identifier is not set on directory (%s)", e.Directory)
 }
 
-var ProjectInheritanceFlagNotSetRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
+var projectInheritanceFlagNotSetRegexp = regexp.MustCompile(`^(.*) - project inheritance flag is not set`)
 
 type ProjectInheritanceFlagNotSetError struct {
 	Directory string
@@ -158,12 +158,12 @@ func (c *Command) checkOutput(b []byte) error {
 	lines := strings.Split(string(b), "\n")
 	for _, l := range lines {
 		var submatches []string
-		submatches = ProjectIdNotSetRegexp.FindStringSubmatch(l)
+		submatches = projectIdNotSetRegexp.FindStringSubmatch(l)
 		if len(submatches) == 2 {
 			errs = append(errs, &ProjectIdNotSetError{Directory: submatches[1]})
 		}
 
-		submatches = ProjectInheritanceFlagNotSetRegexp.FindStringSubmatch(l)
+		submatches = projectInheritanceFlagNotSetRegexp.FindStringSubmatch(l)
 		if len(submatches) == 2 {
 			errs = append(errs, &ProjectInheritanceFlagNotSetError{Directory: submatches[1]})
 		}
