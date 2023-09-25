@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.2](https://github.com/ry023/go-xfsquota/compare/v0.1.1...v0.1.2) - 2023-09-25
+### Breaking Changes 🛠
+- Unexport vars/structs that are exported unnecessarily by @k1LoW in https://github.com/ry023/go-xfsquota/pull/16
+
 ## [v0.1.1](https://github.com/ry023/go-xfsquota/compare/v0.1.0...v0.1.1) - 2023-09-22
 ### Other Changes
 - Revert "Return implementation, not interface." by @k1LoW in https://github.com/ry023/go-xfsquota/pull/14
